@@ -1,6 +1,5 @@
 from OBSController import OBSController
 from streamcontroller_plugin_tools import BackendBase
-from OBSRequests import *
 
 class Backend(BackendBase):
     def __init__(self):
@@ -13,8 +12,8 @@ class Backend(BackendBase):
 x = OBSController()
 x.open_connection()
 
-y = GetProfileList(x)
-print(y.PROFILES)
+y = GetInputs(x)
+print(y.INPUTS)
 
 
 #backend = Backend()
