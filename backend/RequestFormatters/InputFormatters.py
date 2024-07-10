@@ -1,6 +1,8 @@
-from .RequestFormatters import RequestFormatter
 from dataclasses import dataclass
+
 from obswebsocket.base_classes import Baserequests
+
+from .RequestFormatters import RequestFormatter
 
 
 @dataclass

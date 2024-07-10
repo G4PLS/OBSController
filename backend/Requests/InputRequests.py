@@ -69,7 +69,10 @@ class GetInputDefaultSettings(GetRequest):
 
 
 class GetInputSettings(GetRequest):
-    def __new__(cls, obs: obsws, input_name: Optional[str] = None, input_uuid: Optional[uuid.UUID] = None) -> InputSettingFormatter | None:
+    def __new__(cls, obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputSettingFormatter | None:
+        if input_uuid is not None:
+            input_name = None
+
         return cls._request(obs, input_name, input_uuid)
 
     @classmethod
@@ -87,8 +90,11 @@ class GetInputSettings(GetRequest):
 
 
 class GetInputMuted(GetRequest):
-    def __new__(cls, obs: obsws, input_name: Optional[str] = None,
-                input_uuid: Optional[uuid.UUID] = None) -> InputMuteFormatter | None:
+    def __new__(cls, obs: obsws, input_name: str,
+                input_uuid: uuid.UUID = None) -> InputMuteFormatter | None:
+        if input_uuid is not None:
+            input_name = None
+
         return cls._request(obs, input_name, input_uuid)
 
     @classmethod
@@ -103,3 +109,135 @@ class GetInputMuted(GetRequest):
     def request(cls, obs: obsws, input_name, input_uuid) -> InputMuteFormatter | None:
         request_body = obs.call(requests.GetInputMute(inputName=input_name, inputUuid=input_uuid))
         return InputMuteFormatter.from_request_body(request_body)
+
+
+class GetInputVolume(GetRequest):
+    def __new__(cls, obs: obsws, input_name: str,
+                input_uuid: uuid.UUID = None) -> InputVolumeFormatter | None:
+        if input_uuid is not None:
+            input_name = None
+
+        return cls._request(obs, input_name, input_uuid)
+
+    @classmethod
+    def _request(cls, obs: obsws, input_name, input_uuid):
+        try:
+            return cls.request(obs, input_name, input_uuid)
+        except (obswebsocket.exceptions.MessageTimeout, websocket._exceptions.WebSocketConnectionClosedException,
+                KeyError) as e:
+            log.error(e)
+
+    @classmethod
+    def request(cls, obs: obsws, input_name, input_uuid) -> InputVolumeFormatter | None:
+        request_body = obs.call(requests.GetInputVolume(inputName=input_name, inputUuid=input_uuid))
+        return InputVolumeFormatter.from_request_body(request_body)
+
+
+class GetInputAudioBalance(GetRequest):
+    def __new__(cls, obs: obsws, input_name: str,
+                input_uuid: uuid.UUID = None) -> InputAudioBalanceFormatter | None:
+        if input_uuid is not None:
+            input_name = None
+
+        return cls._request(obs, input_name, input_uuid)
+
+    @classmethod
+    def _request(cls, obs: obsws, input_name, input_uuid):
+        try:
+            return cls.request(obs, input_name, input_uuid)
+        except (obswebsocket.exceptions.MessageTimeout, websocket._exceptions.WebSocketConnectionClosedException,
+                KeyError) as e:
+            log.error(e)
+
+    @classmethod
+    def request(cls, obs: obsws, input_name, input_uuid) -> InputAudioBalanceFormatter | None:
+        request_body = obs.call(requests.GetInputAudioBalance(inputName=input_name, inputUuid=input_uuid))
+        return InputAudioBalanceFormatter.from_request_body(request_body)
+
+
+class GetInputSyncOffset(GetRequest):
+    def __new__(cls, obs: obsws, input_name: str,
+                input_uuid: uuid.UUID = None) -> InputAudioSyncOffsetFormatter | None:
+        if input_uuid is not None:
+            input_name = None
+
+        return cls._request(obs, input_name, input_uuid)
+
+    @classmethod
+    def _request(cls, obs: obsws, input_name, input_uuid):
+        try:
+            return cls.request(obs, input_name, input_uuid)
+        except (obswebsocket.exceptions.MessageTimeout, websocket._exceptions.WebSocketConnectionClosedException,
+                KeyError) as e:
+            log.error(e)
+
+    @classmethod
+    def request(cls, obs: obsws, input_name, input_uuid) -> InputAudioSyncOffsetFormatter | None:
+        request_body = obs.call(requests.GetInputAudioSyncOffset(inputName=input_name, inputUuid=input_uuid))
+        return InputAudioSyncOffsetFormatter.from_request_body(request_body)
+
+
+class GetInputAudioMonitorType(GetRequest):
+    def __new__(cls, obs: obsws, input_name: str,
+                input_uuid: uuid.UUID = None) -> InputAudioMonitorFormatter | None:
+        if input_uuid is not None:
+            input_name = None
+
+        return cls._request(obs, input_name, input_uuid)
+
+    @classmethod
+    def _request(cls, obs: obsws, input_name, input_uuid):
+        try:
+            return cls.request(obs, input_name, input_uuid)
+        except (obswebsocket.exceptions.MessageTimeout, websocket._exceptions.WebSocketConnectionClosedException,
+                KeyError) as e:
+            log.error(e)
+
+    @classmethod
+    def request(cls, obs: obsws, input_name, input_uuid) -> InputAudioMonitorFormatter | None:
+        request_body = obs.call(requests.GetInputAudioMonitorType(inputName=input_name, inputUuid=input_uuid))
+        return InputAudioMonitorFormatter.from_request_body(request_body)
+
+
+class GetInputAudioTracks(GetRequest):
+    def __new__(cls, obs: obsws, input_name: str,
+                input_uuid: uuid.UUID = None) -> InputAudioTrackFormatter | None:
+        if input_uuid is not None:
+            input_name = None
+
+        return cls._request(obs, input_name, input_uuid)
+
+    @classmethod
+    def _request(cls, obs: obsws, input_name, input_uuid):
+        try:
+            return cls.request(obs, input_name, input_uuid)
+        except (obswebsocket.exceptions.MessageTimeout, websocket._exceptions.WebSocketConnectionClosedException,
+                KeyError) as e:
+            log.error(e)
+
+    @classmethod
+    def request(cls, obs: obsws, input_name, input_uuid) -> InputAudioTrackFormatter | None:
+        request_body = obs.call(requests.GetInputAudioTracks(inputName=input_name, inputUuid=input_uuid))
+        return InputAudioTrackFormatter.from_request_body(request_body)
+
+
+class GetInputProperties(GetRequest):
+    def __new__(cls, obs: obsws, input_name: str,  property_name: str,
+                input_uuid: uuid.UUID = None) -> InputPropertiesFormatter | None:
+        if input_uuid is not None:
+            input_name = None
+
+        return cls._request(obs, input_name, property_name, input_uuid)
+
+    @classmethod
+    def _request(cls, obs: obsws, input_name, property_name, input_uuid):
+        try:
+            return cls.request(obs, input_name, property_name, input_uuid)
+        except (obswebsocket.exceptions.MessageTimeout, websocket._exceptions.WebSocketConnectionClosedException,
+                KeyError) as e:
+            log.error(e)
+
+    @classmethod
+    def request(cls, obs: obsws, input_name, property_name, input_uuid) -> InputPropertiesFormatter | None:
+        request_body = obs.call(requests.GetInputAudioTracks(inputName=input_name, inputUuid=input_uuid, propertyName=property_name))
+        return InputPropertiesFormatter.from_request_body(request_body)
