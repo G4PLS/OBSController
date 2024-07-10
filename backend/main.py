@@ -1,6 +1,9 @@
 from OBSController import OBSController
 from streamcontroller_plugin_tools import BackendBase
 
+
+from Requests.SceneRequests import *
+
 class Backend(BackendBase):
     def __init__(self):
         super().__init__()
@@ -12,8 +15,8 @@ class Backend(BackendBase):
 x = OBSController()
 x.open_connection()
 
-y = GetInputs(x)
-print(y.INPUTS)
+y = GetSceneList(x)
+print(y.SCENES)
 
 
 #backend = Backend()

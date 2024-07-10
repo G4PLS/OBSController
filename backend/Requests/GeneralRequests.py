@@ -1,4 +1,4 @@
-from OBSRequests import GetRequest
+from .OBSRequests import GetRequest
 from obswebsocket import obsws, requests
 
 from RequestFormatters.GeneralFormatters import *

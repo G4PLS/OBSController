@@ -1,8 +1,7 @@
 import obswebsocket.exceptions
 from obswebsocket import obsws
 
-from Requests.OBSRequests import GetVersion, GetStats
-from RequestFormatters import VersionFormatter
+from RequestFormatters.GeneralFormatters import VersionFormatter
 
 from loguru import logger as log
 import websocket
@@ -33,9 +32,9 @@ class OBSController(obsws):
         super().__init__(on_connect=self.on_connect, on_disconnect=self.on_disconnect, **kwargs)
         self.event_obs = obsws(on_connect=self.on_connect, on_disconnect=self.on_disconnect, **kwargs)
         self.connect()
-        self.get_version()
-        log.info(f"Successfully connected to OBS {self.version.OBS_VERSION} "
-                 f"under {kwargs.get("host")}:{kwargs.get("port")}")
+        #self.get_version()
+        #log.info(f"Successfully connected to OBS {self.version.OBS_VERSION} "
+        #         f"under {kwargs.get("host")}:{kwargs.get("port")}")
 
     def open_connection(self, host: str = 'localhost', port: int = 4455, password: str = "", legacy: bool = False, **kwargs) -> bool:
         try:
@@ -53,10 +52,3 @@ class OBSController(obsws):
     #
     # GENERAL REQUESTS
     #
-
-    def get_version(self):
-        self.version = GetVersion(self)
-        return self.version
-
-    def get_stats(self):
-        return GetStats(self)

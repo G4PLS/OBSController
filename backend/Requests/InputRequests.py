@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 
-from OBSRequests import GetRequest
+from .OBSRequests import GetRequest
 from obswebsocket import obsws, requests
 import obswebsocket
 import websocket
