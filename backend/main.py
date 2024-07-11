@@ -2,7 +2,7 @@ from OBSController import OBSController
 from streamcontroller_plugin_tools import BackendBase
 
 
-from Requests.SceneRequests import *
+from Requests.ConfigRequests import *
 
 class Backend(BackendBase):
     def __init__(self):
@@ -15,8 +15,8 @@ class Backend(BackendBase):
 x = OBSController()
 x.open_connection()
 
-y = GetSceneList(x)
-print(y.SCENES)
+z = RecordDirectoryRequest.get(x)
 
+print(z.RECORD_DIRECTORY)
 
 #backend = Backend()

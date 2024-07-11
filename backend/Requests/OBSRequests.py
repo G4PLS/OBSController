@@ -1,3 +1,5 @@
+from functools import wraps
+
 from obswebsocket import obsws
 import obswebsocket
 
@@ -7,49 +9,31 @@ import websocket
 from abc import ABC, abstractmethod
 
 
-class OBSRequest(ABC):
-    @abstractmethod
-    def __new__(cls, obs: obsws):
-        return cls._request(obs)
-
-    @classmethod
-    def _request(cls, obs: obsws):
+def request_error_handler(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
         try:
-            return cls.request(obs)
+            return func(*args, **kwargs)
         except (obswebsocket.exceptions.MessageTimeout, websocket._exceptions.WebSocketConnectionClosedException,
                 KeyError) as e:
             log.error(e)
+    return wrapper
 
-    @classmethod
+
+class OBSRequest(ABC):
+    @staticmethod
     @abstractmethod
-    def request(cls, obs: obsws):
-        return None
+    @request_error_handler
+    def get(obs: obsws, *args, **kwargs) -> RequestFormatter:
+        pass
 
-
-class GetRequest(OBSRequest):
-    @abstractmethod
-    def __new__(cls, obs: obsws) -> RequestFormatter | None:
-        return cls._request(obs)
-
-    @classmethod
-    @abstractmethod
-    def request(cls, obs: obsws) -> RequestFormatter | None:
-        return None
-
-
-class EventRequest(OBSRequest):
-    @abstractmethod
-    def __new__(cls, obs: obsws) -> None:
-        cls._request(obs)
-
-    @classmethod
-    @abstractmethod
-    def request(cls, obs: obsws) -> None:
+    @staticmethod
+    @request_error_handler
+    def set(obs: obsws, *args, **kwargs):
         pass
 
 # TODO:
-#  INPUT REQUESTS <-
-#  TRANSITION REQUESTS
+#  TRANSITION REQUESTS <-
 #  FILTER REQUESTS
 #  SCENE ITEM REQUESTS
 #  OUTPUT REQUESTS
