@@ -1,52 +1,56 @@
-from .RequestFormatters import RequestFormatter
 from dataclasses import dataclass
-from obswebsocket.base_classes import Baserequests
+
+from obswebsocket import Baserequests
+
+from .GetRequestContent import GetRequestContent
 
 
 @dataclass
-class SceneCollectionFormatter(RequestFormatter):
-    """
-    GetSceneCollectionList
-    """
+class SceneCollection(GetRequestContent):
     SCENE_COLLECTIONS: list[str]
-    CURRENT_SCENE_COLLECTION: str
+    """List of names for all available Scene Collections"""
+    SCENE_COLLECTION_NAME: str
+    """Name of the Current Scene Collection"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):
         return cls(
             SCENE_COLLECTIONS=request_body.datain["sceneCollections"],
-            CURRENT_SCENE_COLLECTION=request_body.datain["currentSceneCollectionName"]
+            SCENE_COLLECTION_NAME=request_body.datain["currentSceneCollectionName"]
         )
 
 
 @dataclass
-class ProfileListFormatter(RequestFormatter):
-    """
-    GetProfileList
-    """
+class ProfileList(GetRequestContent):
     PROFILES: list[str]
-    CURRENT_PROFILE: str
+    """List of names for all available profiles"""
+    PROFILE_NAME: str
+    """Name of the Current Profile"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):
         return cls(
             PROFILES=request_body.datain["profiles"],
-            CURRENT_PROFILE=request_body.datain["currentProfileName"]
+            PROFILE_NAME=request_body.datain["currentProfileName"]
         )
 
 
 @dataclass
-class VideoSettingsFormatter(RequestFormatter):
-    """
-    GetVideoSettings
-    """
+class VideoSettings(GetRequestContent):
     FPS_NUMERATOR: float
+    """Numerator of the fractional FPS value"""
     FPS_DENOMINATOR: float
+    """Denominator of the fractional FPS value"""
     FPS: float
+    """True FPS value by doing :attr:`FPS_NUMERATOR` / :attr:`FPS_DENOMINATOR`"""
     BASE_WIDTH: int
+    """Width of the base (canvas) resolution in pixels"""
     BASE_HEIGHT: int
+    """Height of the base (canvas) resolution in pixels"""
     OUTPUT_WIDTH: int
+    """Width of the output resolution in pixels"""
     OUTPUT_HEIGHT: int
+    """Height of the output resolution in pixels"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):
@@ -62,12 +66,11 @@ class VideoSettingsFormatter(RequestFormatter):
 
 
 @dataclass
-class StreamServiceFormatter(RequestFormatter):
-    """
-    GetStreamServiceSettings
-    """
+class StreamServiceSettings(GetRequestContent):
     SERVICE_TYPE: str
+    """Stream service type like rtmp_custom or rtmp_common"""
     SERVICE_SETTINGS: object
+    """Stream Service Settings"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):
@@ -78,11 +81,9 @@ class StreamServiceFormatter(RequestFormatter):
 
 
 @dataclass
-class RecordDirectoryFormatter(RequestFormatter):
-    """
-    GetRecordDirectory
-    """
+class RecordDirectory(GetRequestContent):
     RECORD_DIRECTORY: str
+    """Output directory"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):

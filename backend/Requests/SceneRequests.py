@@ -1,47 +1,46 @@
+import uuid
+
 from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
-from RequestFormatters.SceneFormatters import *
+from GetRequestContent.SceneContent import *
 
 
-class SceneListRequest(OBSRequest):
+class SceneRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get(obs: obsws) -> SceneListFormatter | None:
+    def get_scene_list(obs: obsws) -> SceneList:
+        """GetSceneList"""
         request_body = obs.call(requests.GetSceneList())
-        return SceneListFormatter.from_request_body(request_body)
+        return SceneList.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class GroupListRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws) -> GroupListFormatter | None:
+    def get_group_list(obs: obsws) -> GroupList:
+        """GetGroupList"""
         request_body = obs.call(requests.GetGroupList())
-        return GroupListFormatter.from_request_body(request_body)
+        return GroupList.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class CurrentSceneRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, is_preview: bool = False) -> CurrentSceneFormatter | None:
+    def get_current_program_scene(obs: obsws, is_preview: bool = False) -> Scene:
+        """
+        GetCurrentProgramScene
+        GetCurrentPreviewScene
+        """
         if is_preview:
             request_body = obs.call(requests.GetCurrentPreviewScene())
         else:
             request_body = obs.call(requests.GetCurrentProgramScene())
 
-        return CurrentSceneFormatter.from_request_body(request_body)
+        return Scene.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+    def get_scene_transition_override(obs: obsws, scene_name: str, scene_uuid: uuid.UUID = None) -> SceneTransitionOverride:
+        """GetSceneSceneTransitionOverride"""
+        if scene_uuid is not None:
+            scene_name = None
+
+        request_body = obs.call(requests.GetSceneSceneTransitionOverride(sceneName=scene_name, sceneUuid=scene_uuid))
+        return SceneTransitionOverride.from_request_body(request_body)

@@ -1,68 +1,39 @@
 from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
-from RequestFormatters.ConfigFormatters import *
+from GetRequestContent.ConfigContent import *
 
 
-class SceneCollectionRequest(OBSRequest):
+class ConfigRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get(obs: obsws, *args, **kwargs) -> SceneCollectionFormatter:
+    def get_scene_collection(obs: obsws) -> SceneCollection:
+        """
+        GetSceneCollectionList
+        """
         request_body = obs.call(requests.GetSceneCollectionList())
-        return SceneCollectionFormatter.from_request_body(request_body)
+        return SceneCollection.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class ProfileListRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, *args, **kwargs) -> ProfileListFormatter:
+    def get_profile_list(obs: obsws) -> ProfileList:
         request_body = obs.call(requests.GetProfileList())
-        return ProfileListFormatter.from_request_body(request_body)
+        return ProfileList.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class VideoSettingsRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, *args, **kwargs) -> VideoSettingsFormatter:
+    def get_video_settings(obs: obsws) -> VideoSettings:
         request_body = obs.call(requests.GetVideoSettings())
-        return VideoSettingsFormatter.from_request_body(request_body)
+        return VideoSettings.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-class StreamServiceRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, *args, **kwargs) -> StreamServiceFormatter:
+    def get_stream_service(obs: obsws) -> StreamServiceSettings:
         request_body = obs.call(requests.GetStreamServiceSettings())
-        return StreamServiceFormatter.from_request_body(request_body)
+        return StreamServiceSettings.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class RecordDirectoryRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, *args, **kwargs) -> RecordDirectoryFormatter:
+    def get_record_directory(obs: obsws) -> RecordDirectory:
         request_body = obs.call(requests.GetRecordDirectory())
-        return RecordDirectoryFormatter.from_request_body(request_body)
-
-    @staticmethod
-    @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+        return RecordDirectory.from_request_body(request_body)

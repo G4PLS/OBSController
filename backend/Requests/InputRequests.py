@@ -3,160 +3,115 @@ import uuid
 from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
-from RequestFormatters.InputFormatters import *
+from GetRequestContent.InputContent import *
 
 
 class InputRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get(obs: obsws, input_kind: str) -> InputListFormatter | None:
+    def get_input_list(obs: obsws, input_kind: str = None) -> InputList:
+        """GetInputList"""
         request_body = obs.call(requests.GetInputList(inputKind=input_kind))
-        return InputListFormatter.from_request_body(request_body)
+        return InputList.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class InputKindRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws) -> InputKindFormatter | None:
-        request_body = obs.call(requests.GetInputKindList())
-        return InputKindFormatter.from_request_body(request_body)
+    def get_input_kinds(obs: obsws, versioning: bool = False) -> InputKind:
+        """GetInputKindList"""
+        request_body = obs.call(requests.GetInputKindList(unversioned=not versioning))
+        return InputKind.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class SpecialInputRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws) -> SpecialInputFormatter | None:
+    def get_special_inputs(obs: obsws) -> SpecialInput:
+        """GetSpecialInputs"""
         request_body = obs.call(requests.GetSpecialInputs())
-        return SpecialInputFormatter.from_request_body(request_body)
+        return SpecialInput.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class InputDefaultSettingRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, input_kind: str) -> DefaultInputSettingFormatter | None:
+    def get_input_default_setting(obs: obsws, input_kind: str) -> InputKindDefaultSetting:
+        """GetInputDefaultSettings"""
         request_body = obs.call(requests.GetInputDefaultSettings(inputKind=input_kind))
-        return DefaultInputSettingFormatter.from_request_body(request_body)
+        return InputKindDefaultSetting.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+    def get_input_settings(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputSettings:
+        """GetInputSettings"""
+        if input_uuid is not None:
+            input_name = None
 
-
-class InputSettingRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, input_name: str, input_uuid: uuid.UUID) -> InputSettingFormatter | None:
         request_body = obs.call(requests.GetInputSettings(inputName=input_name, inputUuid=input_uuid))
-        return InputSettingFormatter.from_request_body(request_body)
+        return InputSettings.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+    def get_input_muted(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputMute:
+        """GetInputMute"""
+        if input_uuid is not None:
+            input_name = None
 
-
-class InputMutedRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, input_name: str, input_uuid: uuid.UUID) -> InputMuteFormatter | None:
         request_body = obs.call(requests.GetInputMute(inputName=input_name, inputUuid=input_uuid))
-        return InputMuteFormatter.from_request_body(request_body)
+        return InputMute.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+    def get_input_volume(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputVolume:
+        """GetInputVolume"""
+        if input_uuid is not None:
+            input_name = None
 
-
-class InputVolumeRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, input_name: str, input_uuid: uuid.UUID) -> InputVolumeFormatter | None:
         request_body = obs.call(requests.GetInputVolume(inputName=input_name, inputUuid=input_uuid))
-        return InputVolumeFormatter.from_request_body(request_body)
+        return InputVolume.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+    def get_input_audio_balance(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputAudioBalance:
+        """GetInputAudioBalance"""
+        if input_uuid is not None:
+            input_name = None
 
-
-class InputAudioBalanceRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, input_name: str, input_uuid: uuid.UUID) -> InputAudioBalanceFormatter | None:
         request_body = obs.call(requests.GetInputAudioBalance(inputName=input_name, inputUuid=input_uuid))
-        return InputAudioBalanceFormatter.from_request_body(request_body)
+        return InputAudioBalance.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+    def get_input_audio_sync_offset(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputAudioSyncOffset:
+        """GetInputAudioSyncOffset"""
+        if input_uuid is not None:
+            input_name = None
 
-
-class InputSyncOffsetRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, input_name: str, input_uuid: uuid.UUID) -> InputAudioSyncOffsetFormatter | None:
         request_body = obs.call(requests.GetInputAudioSyncOffset(inputName=input_name, inputUuid=input_uuid))
-        return InputAudioSyncOffsetFormatter.from_request_body(request_body)
+        return InputAudioSyncOffset.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+    def get_audio_monitor_type(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputAudioMonitorType:
+        """GetInputAudioMonitorType"""
+        if input_uuid is not None:
+            input_name = None
 
-
-class InputAudioMonitorTypeRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, input_name: str, input_uuid: uuid.UUID) -> InputAudioMonitorFormatter | None:
         request_body = obs.call(requests.GetInputAudioMonitorType(inputName=input_name, inputUuid=input_uuid))
-        return InputAudioMonitorFormatter.from_request_body(request_body)
+        return InputAudioMonitorType.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+    def get_input_audio_tracks(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputAudioTrack:
+        """GetInputAudioTracks"""
+        if input_uuid is not None:
+            input_name = None
 
-
-class InputAudioTrackRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, input_name: str, input_uuid: uuid.UUID) -> InputAudioTrackFormatter | None:
         request_body = obs.call(requests.GetInputAudioTracks(inputName=input_name, inputUuid=input_uuid))
-        return InputAudioTrackFormatter.from_request_body(request_body)
+        return InputAudioTrack.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+    def get_input_properties(obs: obsws, input_name: str, property_name: str, input_uuid: uuid.UUID = None) -> InputProperties:
+        """GetInputPropertiesListPropertyItems"""
+        if input_uuid is not None:
+            input_name = None
 
-
-class InputPropertiesRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, input_name: str, property_name: str, input_uuid: uuid.UUID) -> InputPropertiesFormatter | None:
-        request_body = obs.call(requests.GetInputAudioTracks(inputName=input_name, inputUuid=input_uuid, propertyName=property_name))
-        return InputPropertiesFormatter.from_request_body(request_body)
-
-    @staticmethod
-    @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+        request_body = obs.call(
+            requests.GetInputAudioTracks(inputName=input_name, inputUuid=input_uuid, propertyName=property_name))
+        return InputProperties.from_request_body(request_body)

@@ -4,32 +4,33 @@ from obswebsocket import obsws, requests
 from RequestFormatters.TransitionFormatters import *
 
 
-class GetTransitionKinds(OBSRequest):
+class TransitionKindRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get(obs: obsws):
+    def get(obs: obsws) -> TransitionKindFormatter:
         request_body = obs.call(requests.GetTransitionKindList())
         return TransitionKindFormatter.from_request_body(request_body)
 
 
-class GetSceneTransitions(OBSRequest):
+class SceneTransitionRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get(obs: obsws):
+    def get(obs: obsws) -> SceneTransitionFormatter:
         request_body = obs.call(requests.GetSceneTransitionList())
         return SceneTransitionFormatter.from_request_body(request_body)
 
 
-class GetCurrentSceneTransition(OBSRequest):
+class CurrentSceneTransitionRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get(obs: obsws):
+    def get(obs: obsws) -> CurrentSceneTransitionFormatter:
         request_body = obs.call(requests.GetCurrentSceneTransition())
         return CurrentSceneTransitionFormatter.from_request_body(request_body)
 
 
-class GetTransitionCursor(OBSRequest):
+class TransitionCursorRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get(obs: obsws):
-        pass
+    def get(obs: obsws) -> SceneTransitionCursorFormatter:
+        request_body = obs.call(requests.GetCurrentSceneTransitionCursor())
+        return SceneTransitionCursorFormatter.from_request_body(request_body)

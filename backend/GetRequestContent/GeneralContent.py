@@ -1,18 +1,22 @@
-from .RequestFormatters import RequestFormatter
 from dataclasses import dataclass
-from obswebsocket.base_classes import Baserequests
+
+from obswebsocket import Baserequests
+
+from .GetRequestContent import GetRequestContent
 
 
 @dataclass
-class VersionFormatter(RequestFormatter):
-    """
-    GetVersion
-    """
+class Version(GetRequestContent):
     OBS_VERSION: str
+    """Current OBS Version"""
     WEBSOCKET_VERSION: str
+    """Current Websocket Version"""
     RPC_VERSION: int
+    """Current RPC Version"""
     IMAGE_FORMATS: []
+    """Available image formats"""
     PLATFORM: str
+    """Name of Platform"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):
@@ -26,19 +30,25 @@ class VersionFormatter(RequestFormatter):
 
 
 @dataclass
-class StatsFormatter(RequestFormatter):
-    """
-    GetStats
-    """
+class Stats(GetRequestContent):
     CPU_USAGE: float
+    """Current CPU usage in %"""
     MEMORY_USAGE: float
+    """Current memory usage by OBS in MB"""
     DISK_SPACE: float
+    """Available disk space on the device being used for recording storage"""
     ACTIVE_FPS: float
+    """Current FPS being Rendered"""
     AVG_FRAME_RENDER_TIME: float
+    """Average time in milliseconds that OBS is taking to render a frame"""
     RENDER_SKIPPED_FRAMES: float
+    """Number of frames skipped by OBS in the render thread"""
     RENDER_TOTAL_FRAMES: float
+    """Total number of frames outputted by the render thread"""
     OUTPUT_SKIPPED_FRAMES: float
+    """Number of frames skipped by OBS in the output thread"""
     OUTPUT_TOTAL_FRAMES: float
+    """Total number of frames outputted by the output thread"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):
@@ -56,11 +66,9 @@ class StatsFormatter(RequestFormatter):
 
 
 @dataclass
-class HotkeyFormatter(RequestFormatter):
-    """
-    GetHotkeyList
-    """
+class HotkeyList(GetRequestContent):
     HOTKEYS: list[str]
+    """Array of hotkey names"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):

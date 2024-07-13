@@ -1,43 +1,27 @@
 from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
-from RequestFormatters.GeneralFormatters import *
+from GetRequestContent.GeneralContent import *
 
 
-class VersionRequest(OBSRequest):
+class GeneralRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get(obs: obsws, *args, **kwargs) -> VersionFormatter:
+    def get_version(obs: obsws) -> Version:
+        """GetVersion"""
         request_body = obs.call(requests.GetVersion())
-        return VersionFormatter.from_request_body(request_body)
+        return Version.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class StatRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, *args, **kwargs) -> StatsFormatter:
+    def get_stats(obs: obsws) -> Stats:
+        """GetStats"""
         request_body = obs.call(requests.GetStats())
-        return StatsFormatter.from_request_body(request_body)
+        return Stats.from_request_body(request_body)
 
     @staticmethod
     @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
-
-
-class HotkeyRequest(OBSRequest):
-    @staticmethod
-    @request_error_handler
-    def get(obs: obsws, *args, **kwargs) -> HotkeyFormatter:
+    def get_hotkey_list(obs: obsws) -> HotkeyList:
+        """GetHotkeyList"""
         request_body = obs.call(requests.GetHotkeyList())
-        return HotkeyFormatter.from_request_body(request_body)
-
-    @staticmethod
-    @request_error_handler
-    def set(obs: obsws, *args, **kwargs):
-        pass
+        return HotkeyList.from_request_body(request_body)

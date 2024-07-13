@@ -1,8 +1,6 @@
 import obswebsocket.exceptions
 from obswebsocket import obsws
 
-from RequestFormatters.GeneralFormatters import VersionFormatter
-
 from loguru import logger as log
 import websocket
 
