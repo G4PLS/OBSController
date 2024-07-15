@@ -13,7 +13,7 @@ class Version(GetRequestContent):
     """Current Websocket Version"""
     RPC_VERSION: int
     """Current RPC Version"""
-    IMAGE_FORMATS: []
+    IMAGE_FORMATS: list[str]
     """Available image formats"""
     PLATFORM: str
     """Name of Platform"""

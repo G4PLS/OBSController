@@ -1,4 +1,6 @@
+import uuid
 from dataclasses import dataclass
+from typing import List
 
 from obswebsocket import Baserequests
 
@@ -9,7 +11,7 @@ from .GetRequestContent import GetRequestContent
 class Scene(GetRequestContent):
     SCENE_NAME: str
     """Name of the scene"""
-    SCENE_UUID: str
+    SCENE_UUID: uuid.UUID
     """Uuid of the scene"""
 
     @classmethod
