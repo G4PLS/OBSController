@@ -1,10 +1,10 @@
 import uuid
 
-from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
-from GetRequestContent.SourceFilterContent import *
 from GetRequestContent.GetRequestContent import convert_single
+from GetRequestContent.SourceFilterContent import *
+from .OBSRequests import OBSRequest, request_error_handler
 
 
 class SourceFilterRequest(OBSRequest):
@@ -29,7 +29,8 @@ class SourceFilterRequest(OBSRequest):
     @request_error_handler
     def get_filter_info(obs: obsws, source_name: str, filter_name: str, source_uuid: uuid.UUID = None) -> FilterInfo:
         """GetSourceFilter"""
-        request_body = obs.call(requests.GetSourceFilter(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name))
+        request_body = obs.call(
+            requests.GetSourceFilter(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name))
         return FilterInfo.from_request_body(request_body)
 
     @staticmethod

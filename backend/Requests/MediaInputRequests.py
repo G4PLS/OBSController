@@ -1,9 +1,9 @@
 import uuid
 
-from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
 from GetRequestContent.MediaInputContent import *
+from .OBSRequests import OBSRequest, request_error_handler
 
 
 class MediaInputRequest(OBSRequest):

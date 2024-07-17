@@ -1,10 +1,8 @@
-import uuid
-
-from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
-from GetRequestContent.UiContent import *
 from GetRequestContent.GetRequestContent import convert_single
+from GetRequestContent.UiContent import *
+from .OBSRequests import OBSRequest, request_error_handler
 
 
 class UiRequest(OBSRequest):

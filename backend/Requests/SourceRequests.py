@@ -1,9 +1,10 @@
-from .OBSRequests import OBSRequest, request_error_handler
-from obswebsocket import obsws, requests
 import uuid
+
 from loguru import logger as log
+from obswebsocket import obsws, requests
 
 from GetRequestContent.SourceContent import *
+from .OBSRequests import OBSRequest, request_error_handler
 
 
 class SourceRequest(OBSRequest):
@@ -38,7 +39,8 @@ class SourceRequest(OBSRequest):
             image_height = 255
 
         if image_compression_quality < -1 or image_compression_quality > 100:
-            log.error(f"Compression Quality is {image_compression_quality} and falls out of bounds (>=-1, <=100). Defaulting to -1")
+            log.error(
+                f"Compression Quality is {image_compression_quality} and falls out of bounds (>=-1, <=100). Defaulting to -1")
             image_compression_quality = -1
 
         request_body = obs.call(requests.GetSourceScreenshot(

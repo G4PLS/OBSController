@@ -1,11 +1,9 @@
+from abc import ABC
 from functools import wraps
 
-from obswebsocket import obsws
 import obswebsocket
-
-from loguru import logger as log
 import websocket
-from abc import ABC
+from loguru import logger as log
 
 
 def request_error_handler(func):
@@ -16,6 +14,7 @@ def request_error_handler(func):
         except (obswebsocket.exceptions.MessageTimeout, websocket._exceptions.WebSocketConnectionClosedException,
                 KeyError) as e:
             log.error(e)
+
     return wrapper
 
 

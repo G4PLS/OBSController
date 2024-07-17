@@ -1,10 +1,10 @@
 import uuid
 
-from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
-from GetRequestContent.InputContent import *
 from GetRequestContent.GetRequestContent import convert_single
+from GetRequestContent.InputContent import *
+from .OBSRequests import OBSRequest, request_error_handler
 
 
 class InputRequest(OBSRequest):
@@ -108,7 +108,8 @@ class InputRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_input_properties(obs: obsws, input_name: str, property_name: str, input_uuid: uuid.UUID = None) -> InputProperties:
+    def get_input_properties(obs: obsws, input_name: str, property_name: str,
+                             input_uuid: uuid.UUID = None) -> InputProperties:
         """GetInputPropertiesListPropertyItems"""
         if input_uuid is not None:
             input_name = None

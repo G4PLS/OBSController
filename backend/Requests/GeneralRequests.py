@@ -1,8 +1,8 @@
-from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
 from GetRequestContent.GeneralContent import *
 from GetRequestContent.GetRequestContent import convert_single
+from .OBSRequests import OBSRequest, request_error_handler
 
 
 class GeneralRequest(OBSRequest):

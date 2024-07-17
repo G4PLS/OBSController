@@ -1,7 +1,7 @@
-from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
 from GetRequestContent.RecordContent import *
+from .OBSRequests import OBSRequest, request_error_handler
 
 
 class RecordRequests(OBSRequest):

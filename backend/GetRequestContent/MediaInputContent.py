@@ -1,5 +1,5 @@
-from enum import Enum
 from dataclasses import dataclass
+from enum import Enum
 
 from obswebsocket import Baserequests
 
@@ -29,6 +29,7 @@ class MediaState(Enum):
             "OBS_MEDIA_STATE_ERROR": cls.ERROR,
         }
         return obs_state_mapping.get(obs_state, None)
+
 
 @dataclass
 class MediaInputStatus(GetRequestContent):

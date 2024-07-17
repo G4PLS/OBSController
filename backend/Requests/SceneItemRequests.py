@@ -1,8 +1,8 @@
-from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
-from GetRequestContent.SceneItemContent import *
 from GetRequestContent.GetRequestContent import convert_single
+from GetRequestContent.SceneItemContent import *
+from .OBSRequests import OBSRequest, request_error_handler
 
 
 class SceneItemRequest(OBSRequest):
@@ -28,7 +28,8 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_id(obs: obsws, source_name: str, scene_name: str = None, scene_uuid: uuid.UUID = None, search_offset: int = -1) -> int:
+    def get_scene_item_id(obs: obsws, source_name: str, scene_name: str = None, scene_uuid: uuid.UUID = None,
+                          search_offset: int = -1) -> int:
         """GetSceneItemId"""
         if scene_uuid is not None:
             scene_name = None
@@ -38,13 +39,14 @@ class SceneItemRequest(OBSRequest):
             sceneUuid=scene_uuid,
             sourceName=source_name,
             searchOffset=search_offset
-            )
+        )
         )
         return convert_single(request_body, "sceneItemId")
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_source(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> SceneItemSource:
+    def get_scene_item_source(obs: obsws, scene_item_id: int, scene_name: str = None,
+                              scene_uuid: uuid.UUID = None) -> SceneItemSource:
         """GetSceneItemSource"""
         if scene_uuid is not None:
             scene_name = None
@@ -55,7 +57,8 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_transform(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> SceneItemTransform:
+    def get_scene_item_transform(obs: obsws, scene_item_id: int, scene_name: str = None,
+                                 scene_uuid: uuid.UUID = None) -> SceneItemTransform:
         """GetSceneItemTransform"""
         if scene_uuid is not None:
             scene_name = None
@@ -66,7 +69,8 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_enabled(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> bool:
+    def get_scene_item_enabled(obs: obsws, scene_item_id: int, scene_name: str = None,
+                               scene_uuid: uuid.UUID = None) -> bool:
         """GetSceneItemEnabled"""
         if scene_uuid is not None:
             scene_name = None
@@ -77,7 +81,8 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_locked(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> bool:
+    def get_scene_item_locked(obs: obsws, scene_item_id: int, scene_name: str = None,
+                              scene_uuid: uuid.UUID = None) -> bool:
         """GetSceneItemLocked"""
         if scene_uuid is not None:
             scene_name = None
@@ -88,7 +93,8 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_index(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> int:
+    def get_scene_item_index(obs: obsws, scene_item_id: int, scene_name: str = None,
+                             scene_uuid: uuid.UUID = None) -> int:
         """GetSceneItemIndex"""
         if scene_uuid is not None:
             scene_name = None
@@ -99,7 +105,8 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_blend_mode(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> str:
+    def get_scene_item_blend_mode(obs: obsws, scene_item_id: int, scene_name: str = None,
+                                  scene_uuid: uuid.UUID = None) -> str:
         """GetSceneItemBlendMode"""
         # Todo: Use Enum
         if scene_uuid is not None:

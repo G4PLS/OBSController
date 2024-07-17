@@ -33,7 +33,9 @@ class GroupSceneItem(GetRequestContent):
 @dataclass
 class SceneItemSource(GetRequestContent):
     SOURCE_NAME: str
+    """Name of the source associated with the scene item"""
     SOURCE_UUID: uuid.UUID
+    """UUID of the source associated with the scene item"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):
@@ -46,6 +48,7 @@ class SceneItemSource(GetRequestContent):
 @dataclass
 class SceneItemTransform(GetRequestContent):
     SCENE_ITEM_TRANSFORM: object
+    """Object containing scene item transform info"""
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):

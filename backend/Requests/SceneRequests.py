@@ -1,10 +1,8 @@
-import uuid
-
-from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
-from GetRequestContent.SceneContent import *
 from GetRequestContent.GetRequestContent import convert_single
+from GetRequestContent.SceneContent import *
+from .OBSRequests import OBSRequest, request_error_handler
 
 
 class SceneRequest(OBSRequest):
@@ -38,7 +36,8 @@ class SceneRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_scene_transition_override(obs: obsws, scene_name: str, scene_uuid: uuid.UUID = None) -> SceneTransitionOverride:
+    def get_scene_transition_override(obs: obsws, scene_name: str,
+                                      scene_uuid: uuid.UUID = None) -> SceneTransitionOverride:
         """GetSceneSceneTransitionOverride"""
         if scene_uuid is not None:
             scene_name = None
