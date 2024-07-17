@@ -4,6 +4,7 @@ from obswebsocket import obsws, requests
 from GetRequestContent.OutputContent import *
 from GetRequestContent.GetRequestContent import convert_single
 
+
 class OutputRequest(OBSRequest):
     @staticmethod
     @request_error_handler
