@@ -6,30 +6,6 @@ from .GetRequestContent import GetRequestContent
 
 
 @dataclass
-class InputList(GetRequestContent):
-    INPUTS: list[str]
-    """Array of inputs"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            INPUTS=request_body.datain["inputs"]
-        )
-
-
-@dataclass
-class InputKind(GetRequestContent):
-    INPUT_KINDS: list[str]
-    """Array of input kinds"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            INPUT_KINDS=request_body.datain["inputKinds"]
-        )
-
-
-@dataclass
 class SpecialInput(GetRequestContent):
     DESKTOP_1: str
     """Name of the Desktop Audio input"""
@@ -84,18 +60,6 @@ class InputSettings(GetRequestContent):
 
 
 @dataclass
-class InputMute(GetRequestContent):
-    MUTED: bool
-    """Whether the input is muted"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            MUTED=request_body.datain["inputMuted"]
-        )
-
-
-@dataclass
 class InputVolume(GetRequestContent):
     VOLUME_MUL: float
     """Volume setting in mul"""
@@ -107,42 +71,6 @@ class InputVolume(GetRequestContent):
         return cls(
             VOLUME_MUL=request_body.datain["inputVolumeMul"],
             VOLUME_DB=request_body.datain["inputVolumeDb"]
-        )
-
-
-@dataclass
-class InputAudioBalance(GetRequestContent):
-    AUDIO_BALANCE: float
-    """Audio balance value from 0.0-1.0"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            AUDIO_BALANCE=request_body.datain["inputAudioBalance"]
-        )
-
-
-@dataclass
-class InputAudioSyncOffset(GetRequestContent):
-    AUDIO_SYNC_OFFSET: float
-    """Audio sync offset in milliseconds"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            AUDIO_SYNC_OFFSET=request_body.datain["inputAudioSyncOffset"]
-        )
-
-
-@dataclass
-class InputAudioMonitorType(GetRequestContent):
-    MONITOR_TYPE: str
-    """Audio monitor type"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            request_body.datain["monitorType"]
         )
 
 

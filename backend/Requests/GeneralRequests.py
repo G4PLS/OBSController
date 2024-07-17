@@ -2,6 +2,7 @@ from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
 from GetRequestContent.GeneralContent import *
+from GetRequestContent.GetRequestContent import convert_single
 
 
 class GeneralRequest(OBSRequest):
@@ -21,7 +22,7 @@ class GeneralRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_hotkey_list(obs: obsws) -> HotkeyList:
+    def get_hotkey_list(obs: obsws) -> list[str]:
         """GetHotkeyList"""
         request_body = obs.call(requests.GetHotkeyList())
-        return HotkeyList.from_request_body(request_body)
+        return convert_single(request_body, "hotkeys")

@@ -63,15 +63,3 @@ class Stats(GetRequestContent):
             OUTPUT_SKIPPED_FRAMES=request_body.datain["outputSkippedFrames"],
             OUTPUT_TOTAL_FRAMES=request_body.datain["outputTotalFrames"],
         )
-
-
-@dataclass
-class HotkeyList(GetRequestContent):
-    HOTKEYS: list[str]
-    """Array of hotkey names"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            HOTKEYS=request_body.datain["hotkeys"]
-        )

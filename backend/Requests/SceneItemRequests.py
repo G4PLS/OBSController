@@ -2,6 +2,7 @@ from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
 from GetRequestContent.SceneItemContent import *
+from GetRequestContent.GetRequestContent import convert_single
 
 
 class SceneItemRequest(OBSRequest):
@@ -27,7 +28,7 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_id(obs: obsws, source_name: str, scene_name: str = None, scene_uuid: uuid.UUID = None, search_offset: int = -1) -> SceneItemId:
+    def get_scene_item_id(obs: obsws, source_name: str, scene_name: str = None, scene_uuid: uuid.UUID = None, search_offset: int = -1) -> int:
         """GetSceneItemId"""
         if scene_uuid is not None:
             scene_name = None
@@ -39,7 +40,7 @@ class SceneItemRequest(OBSRequest):
             searchOffset=search_offset
             )
         )
-        return SceneItemId.from_request_body(request_body)
+        return convert_single(request_body, "sceneItemId")
 
     @staticmethod
     @request_error_handler
@@ -65,45 +66,45 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_enabled(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> SceneItemEnabled:
+    def get_scene_item_enabled(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> bool:
         """GetSceneItemEnabled"""
         if scene_uuid is not None:
             scene_name = None
 
         request_body = obs.call(
             requests.GetSceneItemEnabled(sceneItemId=scene_item_id, sceneName=scene_name, sceneUuid=scene_uuid))
-        return SceneItemEnabled.from_request_body(request_body)
+        return convert_single(request_body, "sceneItemEnabled")
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_locked(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> SceneItemLocked:
+    def get_scene_item_locked(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> bool:
         """GetSceneItemLocked"""
         if scene_uuid is not None:
             scene_name = None
 
         request_body = obs.call(
             requests.GetSceneItemLocked(sceneItemId=scene_item_id, sceneName=scene_name, sceneUuid=scene_uuid))
-        return SceneItemLocked.from_request_body(request_body)
+        return convert_single(request_body, "sceneItemLocked")
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_index(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> SceneItemIndex:
+    def get_scene_item_index(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> int:
         """GetSceneItemIndex"""
         if scene_uuid is not None:
             scene_name = None
 
         request_body = obs.call(
             requests.GetSceneItemIndex(sceneItemId=scene_item_id, sceneName=scene_name, sceneUuid=scene_uuid))
-        return SceneItemIndex.from_request_body(request_body)
+        return convert_single(request_body, "sceneItemIndex")
 
     @staticmethod
     @request_error_handler
-    def get_scene_item_blend_mode(obs: obsws, scene_item_id: int, scene_name: str = None,
-                             scene_uuid: uuid.UUID = None) -> SceneItemBlendMode:
+    def get_scene_item_blend_mode(obs: obsws, scene_item_id: int, scene_name: str = None, scene_uuid: uuid.UUID = None) -> str:
         """GetSceneItemBlendMode"""
+        # Todo: Use Enum
         if scene_uuid is not None:
             scene_name = None
 
         request_body = obs.call(
             requests.GetSceneItemBlendMode(sceneItemId=scene_item_id, sceneName=scene_name, sceneUuid=scene_uuid))
-        return SceneItemBlendMode.from_request_body(request_body)
+        return convert_single(request_body, "sceneItemBlendMode")

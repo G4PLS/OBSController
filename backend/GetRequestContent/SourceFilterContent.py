@@ -6,18 +6,6 @@ from .GetRequestContent import GetRequestContent
 
 
 @dataclass
-class FilterKind(GetRequestContent):
-    FILTER_KINDS: list[str]
-    """Array of source filter kinds"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            FILTER_KINDS=request_body.datain["sourceFilterKinds"]
-        )
-
-
-@dataclass
 class SourceFilter(GetRequestContent):
     FILTERS: list[object]
     """Array of filters"""

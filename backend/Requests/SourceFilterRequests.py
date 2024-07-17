@@ -4,15 +4,16 @@ from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
 from GetRequestContent.SourceFilterContent import *
+from GetRequestContent.GetRequestContent import convert_single
 
 
 class SourceFilterRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get_filter_kinds(obs: obsws) -> FilterKind:
+    def get_filter_kinds(obs: obsws) -> list[str]:
         """GetSourceFilterKindList"""
         request_body = obs.call(requests.GetSourceFilterKindList())
-        return FilterKind.from_request_body(request_body)
+        return convert_single(request_body, "sourceFilterKinds")
 
     @staticmethod
     @request_error_handler

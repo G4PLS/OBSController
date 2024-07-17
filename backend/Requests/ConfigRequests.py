@@ -2,6 +2,7 @@ from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
 from GetRequestContent.ConfigContent import *
+from GetRequestContent.GetRequestContent import convert_single
 
 
 class ConfigRequest(OBSRequest):
@@ -35,7 +36,7 @@ class ConfigRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_record_directory(obs: obsws) -> RecordDirectory:
+    def get_record_directory(obs: obsws) -> str:
         """GetRecordDirectory"""
         request_body = obs.call(requests.GetRecordDirectory())
-        return RecordDirectory.from_request_body(request_body)
+        return convert_single(request_body, "recordDirectory")

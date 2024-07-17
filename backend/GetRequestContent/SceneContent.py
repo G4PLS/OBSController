@@ -1,6 +1,5 @@
 import uuid
 from dataclasses import dataclass
-from typing import List
 
 from obswebsocket import Baserequests
 
@@ -23,8 +22,22 @@ class Scene(GetRequestContent):
 
 
 @dataclass
+class IndexedScene(Scene):
+    SCENE_INDEX: int
+    """Index of the Scene"""
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            SCENE_NAME=data.get("sceneName"),
+            SCENE_UUID=data.get("sceneUuid"),
+            SCENE_INDEX=data.get("sceneIndex")
+        )
+
+
+@dataclass
 class SceneList(GetRequestContent):
-    SCENES: list[object]
+    SCENES: list[IndexedScene]
     """Array of scenes"""
     CURRENT_PROGRAM_SCENE: Scene
     """Current program scene"""
@@ -33,8 +46,14 @@ class SceneList(GetRequestContent):
 
     @classmethod
     def from_request_body(cls, request_body: Baserequests):
+        scene_data = request_body.datain["scenes"]
+        scenes = []
+
+        for scene in scene_data:
+            scenes.append(IndexedScene.from_dict(scene))
+
         return cls(
-            SCENES=request_body.datain["scenes"],
+            SCENES=scenes,
             CURRENT_PROGRAM_SCENE=Scene(
                 SCENE_NAME=request_body.datain["currentProgramSceneName"],
                 SCENE_UUID=request_body.datain["currentProgramSceneUuid"]
@@ -43,18 +62,6 @@ class SceneList(GetRequestContent):
                 SCENE_NAME=request_body.datain["currentPreviewSceneName"],
                 SCENE_UUID=request_body.datain["currentPreviewSceneUuid"]
             )
-        )
-
-
-@dataclass
-class GroupList(GetRequestContent):
-    GROUPS: list[str]
-    """Array of group names"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            GROUPS=request_body.datain["groups"]
         )
 
 

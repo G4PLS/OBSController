@@ -4,22 +4,23 @@ from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
 from GetRequestContent.InputContent import *
+from GetRequestContent.GetRequestContent import convert_single
 
 
 class InputRequest(OBSRequest):
     @staticmethod
     @request_error_handler
-    def get_input_list(obs: obsws, input_kind: str = None) -> InputList:
+    def get_input_list(obs: obsws, input_kind: str = None) -> list[str]:
         """GetInputList"""
         request_body = obs.call(requests.GetInputList(inputKind=input_kind))
-        return InputList.from_request_body(request_body)
+        return convert_single(request_body, "inputs")
 
     @staticmethod
     @request_error_handler
-    def get_input_kinds(obs: obsws, versioning: bool = False) -> InputKind:
+    def get_input_kinds(obs: obsws, versioning: bool = False) -> list[str]:
         """GetInputKindList"""
         request_body = obs.call(requests.GetInputKindList(unversioned=not versioning))
-        return InputKind.from_request_body(request_body)
+        return convert_single(request_body, "inputKinds")
 
     @staticmethod
     @request_error_handler
@@ -47,13 +48,13 @@ class InputRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_input_muted(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputMute:
+    def get_input_muted(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> bool:
         """GetInputMute"""
         if input_uuid is not None:
             input_name = None
 
         request_body = obs.call(requests.GetInputMute(inputName=input_name, inputUuid=input_uuid))
-        return InputMute.from_request_body(request_body)
+        return convert_single(request_body, "inputMuted")
 
     @staticmethod
     @request_error_handler
@@ -67,33 +68,33 @@ class InputRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_input_audio_balance(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputAudioBalance:
+    def get_input_audio_balance(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> float:
         """GetInputAudioBalance"""
         if input_uuid is not None:
             input_name = None
 
         request_body = obs.call(requests.GetInputAudioBalance(inputName=input_name, inputUuid=input_uuid))
-        return InputAudioBalance.from_request_body(request_body)
+        return convert_single(request_body, "inputAudioBalance")
 
     @staticmethod
     @request_error_handler
-    def get_input_audio_sync_offset(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputAudioSyncOffset:
+    def get_input_audio_sync_offset(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> float:
         """GetInputAudioSyncOffset"""
         if input_uuid is not None:
             input_name = None
 
         request_body = obs.call(requests.GetInputAudioSyncOffset(inputName=input_name, inputUuid=input_uuid))
-        return InputAudioSyncOffset.from_request_body(request_body)
+        return convert_single(request_body, "inputAudioSyncOffset")
 
     @staticmethod
     @request_error_handler
-    def get_audio_monitor_type(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> InputAudioMonitorType:
+    def get_audio_monitor_type(obs: obsws, input_name: str, input_uuid: uuid.UUID = None) -> str:
         """GetInputAudioMonitorType"""
         if input_uuid is not None:
             input_name = None
 
         request_body = obs.call(requests.GetInputAudioMonitorType(inputName=input_name, inputUuid=input_uuid))
-        return InputAudioMonitorType.from_request_body(request_body)
+        return convert_single(request_body, "monitorType")
 
     @staticmethod
     @request_error_handler

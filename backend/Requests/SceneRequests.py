@@ -4,6 +4,7 @@ from .OBSRequests import OBSRequest, request_error_handler
 from obswebsocket import obsws, requests
 
 from GetRequestContent.SceneContent import *
+from GetRequestContent.GetRequestContent import convert_single
 
 
 class SceneRequest(OBSRequest):
@@ -16,10 +17,10 @@ class SceneRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def get_group_list(obs: obsws) -> GroupList:
+    def get_group_list(obs: obsws) -> list[str]:
         """GetGroupList"""
         request_body = obs.call(requests.GetGroupList())
-        return GroupList.from_request_body(request_body)
+        return convert_single(request_body, "groups")
 
     @staticmethod
     @request_error_handler

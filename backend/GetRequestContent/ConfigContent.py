@@ -78,15 +78,3 @@ class StreamServiceSettings(GetRequestContent):
             SERVICE_TYPE=request_body.datain["streamServiceType"],
             SERVICE_SETTINGS=request_body.datain["streamServiceSettings"]
         )
-
-
-@dataclass
-class RecordDirectory(GetRequestContent):
-    RECORD_DIRECTORY: str
-    """Output directory"""
-
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            RECORD_DIRECTORY=request_body.datain["recordDirectory"]
-        )
