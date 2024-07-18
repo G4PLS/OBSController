@@ -108,6 +108,6 @@ class CreateInput(GetRequestContent):
     @classmethod
     def from_request_body(cls, request_body):
         return cls(
-            INPUT_UUID=request_body["inputUuid"],
-            SCENE_ITEM_ID=request_body["sceneItemId"]
+            INPUT_UUID=request_body.datain["inputUuid"],
+            SCENE_ITEM_ID=request_body.datain["sceneItemId"]
         )

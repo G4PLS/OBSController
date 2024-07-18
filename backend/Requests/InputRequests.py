@@ -124,13 +124,16 @@ class InputRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def create_input(obs: obsws, input_name: str, input_kind: str, scene_name: str = None, scene_uuid: str = None,
+    def create_input(obs: obsws, input_name: str, input_kind: str, scene_name: str = None, scene_uuid: uuid.UUID = None,
                      input_settings: object = None, scene_item_enabled: bool = True) -> CreateInput:
         """CreateInput"""
-        response = obs.call(
-            requests.CreateInput(inputName=input_name, inputKind=input_kind, sceneName=scene_name, sceneUuid=scene_uuid,
-                                 inputSettings=input_settings, sceneItemEnabled=scene_item_enabled))
-        return CreateInput.from_request_body(response.datain)
+        if scene_uuid is not None:
+            scene_name = None
+
+        response_body = obs.call(requests.CreateInput(inputName=input_name, inputKind=input_kind, sceneName=scene_name,
+                                                      sceneUuid=scene_uuid, inputSettings=input_settings,
+                                                      sceneItemEnabled=scene_item_enabled))
+        return CreateInput.from_request_body(response_body)
 
     @staticmethod
     @request_error_handler
