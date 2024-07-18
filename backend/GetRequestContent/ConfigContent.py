@@ -78,3 +78,25 @@ class StreamServiceSettings(GetRequestContent):
             SERVICE_TYPE=request_body.datain["streamServiceType"],
             SERVICE_SETTINGS=request_body.datain["streamServiceSettings"]
         )
+
+@dataclass
+class PersistentData:
+    SLOT_VALUE: any
+
+    @classmethod
+    def from_request_body(cls, request_body: Baserequests):
+        return cls(
+            SLOT_VALUE=request_body.datain["slotValue"]
+        )
+    
+@dataclass
+class ProfileParameter:
+    PARAMETER_VALUE: str
+    DEFAULT_PARAMETER_VALUE: str
+
+    @classmethod
+    def from_request_body(cls, request_body: Baserequests):
+        return cls(
+            PARAMETER_VALUE=request_body.datain["parameterValue"],
+            DEFAULT_PARAMETER_VALUE=request_body.datain["defaultParameterValue"]
+        )
