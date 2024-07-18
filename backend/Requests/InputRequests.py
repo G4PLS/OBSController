@@ -118,6 +118,10 @@ class InputRequest(OBSRequest):
             requests.GetInputAudioTracks(inputName=input_name, inputUuid=input_uuid, propertyName=property_name))
         return InputProperties.from_request_body(request_body)
 
+    #
+    # SET REQUESTS
+    #
+
     @staticmethod
     @request_error_handler
     def create_input(obs: obsws, input_name: str, input_kind: str, scene_name: str = None, scene_uuid: str = None,
