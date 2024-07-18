@@ -22,7 +22,7 @@ The current Request status that is Implemented in the backend, using [this](http
 - [ ] Config
 - [ ] Sources
 - [ ] Scenes
-- [ ] Inputs
+- [X] Inputs (UNTESTED)
 - [ ] Transitions
 - [ ] Filter
 - [ ] Scene Items
