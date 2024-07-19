@@ -30,4 +30,4 @@ The current Request status that is Implemented in the backend, using [this](http
 - [ ] Stream
 - [ ] Record
 - [ ] Media Input
-- [ ] Ui
+- [X] Ui (UNTESTED)
