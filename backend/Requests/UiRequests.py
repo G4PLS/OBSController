@@ -4,7 +4,7 @@ from obswebsocket import obsws, requests
 
 from GetRequestContent.GetRequestContent import convert_single
 from GetRequestContent.UiContent import *
-from .OBSRequests import OBSRequest, request_error_handler
+from .OBSRequests import OBSRequest, request_error_handler, VideoMixType
 
 
 class UiRequest(OBSRequest):

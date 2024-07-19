@@ -1,5 +1,6 @@
 import uuid
 from dataclasses import dataclass
+from enum import Enum
 
 from obswebsocket import Baserequests
 
@@ -55,3 +56,5 @@ class SceneItemTransform(GetRequestContent):
         return cls(
             SCENE_ITEM_TRANSFORM=request_body.datain["sceneItemTransform"]
         )
+
+
