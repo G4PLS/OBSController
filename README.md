@@ -25,7 +25,7 @@ The current Request status that is Implemented in the backend, using [this](http
 - [X] Inputs (UNTESTED)
 - [ ] Transitions
 - [ ] Filter
-- [ ] Scene Items
+- [X] Scene Items (UNTESTED)
 - [ ] Outputs
 - [ ] Stream
 - [ ] Record
