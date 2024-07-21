@@ -23,7 +23,7 @@ The current Request status that is Implemented in the backend, using [this](http
 - [ ] Sources
 - [ ] Scenes
 - [X] Inputs (UNTESTED)
-- [ ] Transitions
+- [X] Transitions (UNTESTED)
 - [ ] Filter
 - [X] Scene Items (UNTESTED)
 - [ ] Outputs
