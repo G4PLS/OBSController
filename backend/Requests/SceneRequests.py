@@ -1,3 +1,4 @@
+from loguru import logger as log
 from obswebsocket import obsws, requests
 
 from GetRequestContent.GetRequestContent import convert_single
@@ -47,44 +48,60 @@ class SceneRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def set_scene_name(obs: obsws, scene_name: str, scene_uuid, new_scene_name: str) -> None:
-        """SetSceneName"""
-        request_body = obs.call(requests.SetSceneName(sceneName=scene_name, sceneUuid=scene_uuid, newSceneName=new_scene_name))
-        return request_body
-    
-    @staticmethod
-    @request_error_handler
-    def set_current_program_scene(obs: obsws, scene_name: str = None, scene_uuid: str = None) -> None:
+    def set_program_scene(obs: obsws, scene_name: str, scene_uuid: uuid.UUID = None):
         """SetCurrentProgramScene"""
-        request_body = obs.call(requests.SetCurrentProgramScene(sceneName=scene_name, sceneUuid=scene_uuid))
-        return request_body
+        if scene_uuid is not None:
+            scene_name = None
+
+        obs.call(requests.SetCurrentProgramScene(sceneName=scene_name, sceneUuid=scene_uuid))
 
     @staticmethod
     @request_error_handler
-    def set_current_preview_scene(obs: obsws, scene_name: str = None, scene_uuid: str = None) -> None:
+    def set_preview_scene(obs: obsws, scene_name: str, scene_uuid: uuid.UUID = None):
         """SetCurrentPreviewScene"""
-        request_body = obs.call(requests.SetCurrentPreviewScene(sceneName=scene_name, sceneUuid=scene_uuid))
-        return request_body
+        if scene_uuid is not None:
+            scene_name = None
+
+        obs.call(requests.SetCurrentPreviewScene(sceneName=scene_name, sceneUuid=scene_uuid))
 
     @staticmethod
     @request_error_handler
-    def create_scene(obs: obsws, scene_name: str) -> str:
+    def create_scene(obs: obsws, scene_name: str) -> uuid.UUID:
         """CreateScene"""
         request_body = obs.call(requests.CreateScene(sceneName=scene_name))
-        return request_body.datain["sceneUuid"]
+        return convert_single(request_body, "sceneUuid")
 
     @staticmethod
     @request_error_handler
-    def remove_scene(obs: obsws, scene_name: str = None, scene_uuid: str = None) -> None:
+    def remove_scene(obs: obsws, scene_name: str, scene_uuid: uuid.UUID = None):
         """RemoveScene"""
-        request_body = obs.call(requests.RemoveScene(sceneName=scene_name, sceneUuid=scene_uuid))
-        return request_body
+        if scene_uuid is not None:
+            scene_name = None
+
+        obs.call(requests.RemoveScene(sceneName=scene_name, sceneUuid=scene_uuid))
 
     @staticmethod
     @request_error_handler
-    def set_scene_transition_override(obs: obsws, scene_name: str = None, scene_uuid: str = None,
-                                      transition_name: str = None, transition_duration: float = None) -> None:
+    def set_scene_name(obs: obsws, scene_name: str, new_scene_name: str, scene_uuid: uuid.UUID = None):
+        """SetSceneName"""
+        if scene_uuid is not None:
+            scene_name = None
+
+        obs.call(requests.SetSceneName(sceneName=scene_name, newSceneName=new_scene_name, sceneUuid=scene_uuid))
+
+    @staticmethod
+    @request_error_handler
+    def set_scene_transition_override(obs: obsws, scene_name: str, transition_name: str, transition_duration: int,
+                                      scene_uuid: uuid.UUID = None):
         """SetSceneSceneTransitionOverride"""
-        request_body = obs.call(requests.SetSceneSceneTransitionOverride(sceneName=scene_name, sceneUuid=scene_uuid,
-                                                                        transitionName=transition_name, transitionDuration=transition_duration))
-        return request_body
+        if scene_uuid is not None:
+            scene_name = None
+
+        if transition_duration < 50 or transition_duration > 20000:
+            log.error(
+                f"Transition duration is: {transition_duration}. Out of bounds! Correct bounds are (>=50, <=20000)")
+            return
+
+        obs.call(requests.SetSceneSceneTransitionOverride(sceneName=scene_name, sceneUuid=scene_uuid,
+                                                          transitionName=transition_name,
+                                                          transitionDuration=transition_duration))

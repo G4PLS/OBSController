@@ -96,3 +96,18 @@ class InputProperties(GetRequestContent):
         return cls(
             PROPERTY_ITEMS=request_body.datain["propertyItems"]
         )
+
+
+@dataclass
+class CreateInput(GetRequestContent):
+    INPUT_UUID: str
+    """UUID of the newly created input"""
+    SCENE_ITEM_ID: int
+    """ID of the newly created scene item"""
+
+    @classmethod
+    def from_request_body(cls, request_body):
+        return cls(
+            INPUT_UUID=request_body.datain["inputUuid"],
+            SCENE_ITEM_ID=request_body.datain["sceneItemId"]
+        )
