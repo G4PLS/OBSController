@@ -26,3 +26,14 @@ class GeneralRequest(OBSRequest):
         """GetHotkeyList"""
         request_body = obs.call(requests.GetHotkeyList())
         return convert_single(request_body, "hotkeys")
+
+    @staticmethod
+    @request_error_handler
+    def trigger_hotkey_by_name(obs: obsws, hotkey_name: str, context_name: str = None):
+        """TriggerHotkeyByName"""
+        obs.call(requests.TriggerHotkeyByName(hotkeyName=hotkey_name, contextName=context_name))
+
+    @staticmethod
+    @request_error_handler
+    def trigger_hotkey_by_sequence():
+        pass

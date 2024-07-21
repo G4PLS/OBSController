@@ -79,16 +79,7 @@ class StreamServiceSettings(GetRequestContent):
             SERVICE_SETTINGS=request_body.datain["streamServiceSettings"]
         )
 
-@dataclass
-class PersistentData:
-    SLOT_VALUE: any
 
-    @classmethod
-    def from_request_body(cls, request_body: Baserequests):
-        return cls(
-            SLOT_VALUE=request_body.datain["slotValue"]
-        )
-    
 @dataclass
 class ProfileParameter:
     PARAMETER_VALUE: str

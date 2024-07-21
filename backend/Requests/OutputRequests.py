@@ -116,4 +116,3 @@ class OutputRequest(OBSRequest):
     def set_output_settings(obs: obsws, output_name: str, output_settings: object):
         """SetOutputSettings"""
         obs.call(requests.SetOutputSettings(outputName=output_name, outputSettings=output_settings))
-
