@@ -1,9 +1,9 @@
+from loguru import logger as log
 from obswebsocket import obsws, requests
 
 from GetRequestContent.GetRequestContent import convert_single
 from GetRequestContent.TransitionContent import *
 from .OBSRequests import OBSRequest, request_error_handler
-from loguru import logger as log
 
 
 class TransitionKindRequest(OBSRequest):

@@ -42,12 +42,14 @@ class SourceFilterRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def create_filter(obs: obsws, source_name: str, filter_name: str, filter_kind: str, filter_settings: object = None, source_uuid: uuid.UUID = None):
+    def create_filter(obs: obsws, source_name: str, filter_name: str, filter_kind: str, filter_settings: object = None,
+                      source_uuid: uuid.UUID = None):
         """CreateSourceFilter"""
         if source_uuid is not None:
             source_name = None
 
-        obs.call(requests.CreateSourceFilter(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name, filterKind=filter_kind, filterSettings=filter_settings))
+        obs.call(requests.CreateSourceFilter(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name,
+                                             filterKind=filter_kind, filterSettings=filter_settings))
 
     @staticmethod
     @request_error_handler
@@ -60,36 +62,45 @@ class SourceFilterRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def create_filter(obs: obsws, source_name: str, filter_name: str, new_filter_name: str, source_uuid: uuid.UUID = None):
+    def create_filter(obs: obsws, source_name: str, filter_name: str, new_filter_name: str,
+                      source_uuid: uuid.UUID = None):
         """SetSourceFilterName"""
         if source_uuid is not None:
             source_name = None
 
-        obs.call(requests.SetSourceFilterName(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name, newFilterName=new_filter_name))
+        obs.call(requests.SetSourceFilterName(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name,
+                                              newFilterName=new_filter_name))
 
     @staticmethod
     @request_error_handler
-    def set_filter_index(obs: obsws, source_name: str, filter_name: str, filter_index: int, source_uuid: uuid.UUID = None):
+    def set_filter_index(obs: obsws, source_name: str, filter_name: str, filter_index: int,
+                         source_uuid: uuid.UUID = None):
         """SetSourceFilterIndex"""
         if source_uuid is not None:
             source_name = None
 
-        obs.call(requests.SetSourceFilterIndex(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name, filterIndex=filter_index))
+        obs.call(requests.SetSourceFilterIndex(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name,
+                                               filterIndex=filter_index))
 
     @staticmethod
     @request_error_handler
-    def set_filter_index(obs: obsws, source_name: str, filter_name: str, filter_settings: object, overlay: bool = False, source_uuid: uuid.UUID = None):
+    def set_filter_index(obs: obsws, source_name: str, filter_name: str, filter_settings: object, overlay: bool = False,
+                         source_uuid: uuid.UUID = None):
         """SetSourceFilterSettings"""
         if source_uuid is not None:
             source_name = None
 
-        obs.call(requests.SetSourceFilterSettings(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name, filterSettings=filter_settings, overlay=overlay))
+        obs.call(
+            requests.SetSourceFilterSettings(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name,
+                                             filterSettings=filter_settings, overlay=overlay))
 
     @staticmethod
     @request_error_handler
-    def set_filter_enabled(obs: obsws, source_name: str, filter_name: str, enabled: bool = False, source_uuid: uuid.UUID = None):
+    def set_filter_enabled(obs: obsws, source_name: str, filter_name: str, enabled: bool = False,
+                           source_uuid: uuid.UUID = None):
         """SetSourceFilterEnabled"""
         if source_uuid is not None:
             source_name = None
 
-        obs.call(requests.SetSourceFilterEnabled(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name, filterEnabled=enabled))
+        obs.call(requests.SetSourceFilterEnabled(sourceName=source_name, sourceUuid=source_uuid, filterName=filter_name,
+                                                 filterEnabled=enabled))

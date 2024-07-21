@@ -57,12 +57,17 @@ class UiRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def open_video_mix_projector(obs: obsws, mix_type: VideoMixType, monitor_index: int = None, projector_geometry: str = None):
+    def open_video_mix_projector(obs: obsws, mix_type: VideoMixType, monitor_index: int = None,
+                                 projector_geometry: str = None):
         """OpenVideoMixProjector"""
-        obs.call(requests.OpenVideoMixProjector(videoMixType=mix_type, monitorIndex=monitor_index, projectorGeometry=projector_geometry))
+        obs.call(requests.OpenVideoMixProjector(videoMixType=mix_type, monitorIndex=monitor_index,
+                                                projectorGeometry=projector_geometry))
 
     @staticmethod
     @request_error_handler
-    def open_source_projector(obs: obsws, source_name: str, source_uuid: uuid.UUID = None, monitor_index: int = None, projector_geometry: str = None):
+    def open_source_projector(obs: obsws, source_name: str, source_uuid: uuid.UUID = None, monitor_index: int = None,
+                              projector_geometry: str = None):
         """OpenSourceProjector"""
-        obs.call(requests.OpenVideoMixProjector(sourceName=source_name, sourceUuid=source_uuid, monitorIndex=monitor_index, projectorGeometry=projector_geometry))
+        obs.call(
+            requests.OpenVideoMixProjector(sourceName=source_name, sourceUuid=source_uuid, monitorIndex=monitor_index,
+                                           projectorGeometry=projector_geometry))

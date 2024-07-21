@@ -1,5 +1,3 @@
-import uuid
-
 from obswebsocket import obsws, requests
 
 from GetRequestContent.GetRequestContent import convert_single
@@ -120,14 +118,17 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def create_scene_item(obs: obsws, scene_name: str, source_name: str, scene_item_enabled: bool, scene_uuid: uuid.UUID = None, source_uuid: uuid.UUID = None) -> int:
+    def create_scene_item(obs: obsws, scene_name: str, source_name: str, scene_item_enabled: bool,
+                          scene_uuid: uuid.UUID = None, source_uuid: uuid.UUID = None) -> int:
         """CreateSceneItem"""
         if source_uuid is not None:
             source_name = None
         if scene_uuid is not None:
             scene_name = None
 
-        request_body = obs.call(requests.CreateSceneItem(sceneName=scene_name, sceneUuid=scene_uuid, sourceName=source_name, sourceUuid=source_uuid, sceneItemEnabled=scene_item_enabled))
+        request_body = obs.call(
+            requests.CreateSceneItem(sceneName=scene_name, sceneUuid=scene_uuid, sourceName=source_name,
+                                     sourceUuid=source_uuid, sceneItemEnabled=scene_item_enabled))
         return convert_single(request_body, "sceneItemId")
 
     @staticmethod
@@ -141,24 +142,30 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def duplicate_scene_item(obs: obsws, scene_name: str, destination_scene_name: str, scene_item_id: int, scene_uuid: uuid.UUID, destination_scene_uuid: uuid.UUID) -> int:
+    def duplicate_scene_item(obs: obsws, scene_name: str, destination_scene_name: str, scene_item_id: int,
+                             scene_uuid: uuid.UUID, destination_scene_uuid: uuid.UUID) -> int:
         """DuplicateSceneItem"""
         if scene_uuid is not None:
             scene_name = None
         if destination_scene_uuid is not None:
             destination_scene_name = None
 
-        request_body = obs.call(requests.DuplicateSceneItem(sceneName=scene_name, sceneUuid=scene_uuid, sceneItemId=scene_item_id, destinationSceneName=destination_scene_name, destinationSceneUuid=destination_scene_uuid))
+        request_body = obs.call(
+            requests.DuplicateSceneItem(sceneName=scene_name, sceneUuid=scene_uuid, sceneItemId=scene_item_id,
+                                        destinationSceneName=destination_scene_name,
+                                        destinationSceneUuid=destination_scene_uuid))
         return convert_single(request_body, "sceneItemId")
 
     @staticmethod
     @request_error_handler
-    def set_scene_item_transform(obs: obsws, scene_name: str, scene_item_id: int, transform: object, scene_uuid: uuid.UUID = None):
+    def set_scene_item_transform(obs: obsws, scene_name: str, scene_item_id: int, transform: object,
+                                 scene_uuid: uuid.UUID = None):
         """SetSceneItemTransform"""
         if scene_uuid is not None:
             scene_name = None
 
-        obs.call(requests.SetSceneItemTransform(sceneName=scene_name, sceneUuid=scene_uuid, sceneItemId=scene_item_id, sceneItemTransform=transform))
+        obs.call(requests.SetSceneItemTransform(sceneName=scene_name, sceneUuid=scene_uuid, sceneItemId=scene_item_id,
+                                                sceneItemTransform=transform))
 
     @staticmethod
     @request_error_handler
@@ -167,7 +174,8 @@ class SceneItemRequest(OBSRequest):
         if scene_uuid is not None:
             scene_name = None
 
-        obs.call(requests.SetSceneItemEnabled(sceneName=scene_name, sceneUuid=scene_uuid, sceneItemId=scene_item_id, sceneItemEnabled=enabled))
+        obs.call(requests.SetSceneItemEnabled(sceneName=scene_name, sceneUuid=scene_uuid, sceneItemId=scene_item_id,
+                                              sceneItemEnabled=enabled))
 
     @staticmethod
     @request_error_handler
@@ -181,7 +189,8 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def set_new_index(obs: obsws, scene_name: str, scene_item_id: int, scene_item_index: int, scene_uuid: uuid.UUID = None):
+    def set_new_index(obs: obsws, scene_name: str, scene_item_id: int, scene_item_index: int,
+                      scene_uuid: uuid.UUID = None):
         """SetSceneItemEnabled"""
         if scene_uuid is not None:
             scene_name = None
@@ -191,7 +200,8 @@ class SceneItemRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def set_blend_mode(obs: obsws, scene_name: str, scene_item_id: int, blend_mode: SceneItemBlendMode, scene_uuid: uuid.UUID = None):
+    def set_blend_mode(obs: obsws, scene_name: str, scene_item_id: int, blend_mode: SceneItemBlendMode,
+                       scene_uuid: uuid.UUID = None):
         """SetSceneItemEnabled"""
         if scene_uuid is not None:
             scene_name = None

@@ -22,6 +22,7 @@ def request_error_handler(func):
 class OBSRequest(ABC):
     pass
 
+
 #
 # GLOBAL STRUCTS
 #
