@@ -20,14 +20,14 @@ The current Request status that is Implemented in the backend, using [this](http
 ## SET/POST/EVENT
 - [ ] General
 - [ ] Config
-- [ ] Sources
-- [ ] Scenes
+- [X] Sources (UNTESTED)
+- [X] Scenes (UNTESTED)
 - [X] Inputs (UNTESTED)
 - [X] Transitions (UNTESTED)
-- [ ] Filter
+- [X] Filter (UNTESTED)
 - [X] Scene Items (UNTESTED)
-- [ ] Outputs
-- [ ] Stream
-- [ ] Record
-- [ ] Media Input
+- [X] Outputs (UNTESTED)
+- [X] Stream (UNTESTED)
+- [X] Record (UNTESTED)
+- [X] Media Input (UNTESTED)
 - [X] Ui (UNTESTED)
