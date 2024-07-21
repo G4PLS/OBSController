@@ -2,7 +2,7 @@ from obswebsocket import obsws, requests
 
 from GetRequestContent.GeneralContent import *
 from GetRequestContent.GetRequestContent import convert_single
-from .OBSRequests import OBSRequest, request_error_handler
+from .OBSRequests import OBSRequest, request_error_handler, KeyModifiers
 
 
 class GeneralRequest(OBSRequest):
@@ -35,5 +35,6 @@ class GeneralRequest(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def trigger_hotkey_by_sequence():
-        pass
+    def trigger_hotkey_by_sequence(obs: obsws, key_id: str, key_mods: KeyModifiers):
+        """TriggerHotkeyByKeySequence"""
+        obs.call(requests.TriggerHotkeyByKeySequence(keyId=key_id, keyModifiers=key_mods.__dict__()))

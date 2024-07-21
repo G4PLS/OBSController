@@ -1,5 +1,5 @@
 from abc import ABC
-from enum import Enum
+from enum import Enum, Flag
 from functools import wraps
 
 import obswebsocket
@@ -47,3 +47,22 @@ class SceneItemBlendMode(Enum):
 class PersistentDataRealm(Enum):
     GLOBAL = "OBS_WEBSOCKET_DATA_REALM_GLOBAL",
     PROFILE = "OBS_WEBSOCKET_DATA_REALM_PROFILE"
+
+
+class KeyModifiers(Flag):
+    SHIFT = 1
+    CONTROL = 2
+    ALT = 4
+    COMMAND = 8
+    ALL = SHIFT | CONTROL | ALT | COMMAND
+
+    def check_selected(self, mod: 'KeyModifiers') -> bool:
+        return (self & mod) == mod
+
+    def __dict__(self):
+        return {
+            "shift": self.check_selected(KeyModifiers.SHIFT),
+            "control": self.check_selected(KeyModifiers.CONTROL),
+            "alt": self.check_selected(KeyModifiers.ALT),
+            "command": self.check_selected(KeyModifiers.COMMAND)
+        }
