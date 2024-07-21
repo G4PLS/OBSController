@@ -1,5 +1,6 @@
 from obswebsocket import obsws, requests
 
+from GetRequestContent.GetRequestContent import convert_single
 from GetRequestContent.StreamContent import *
 from .OBSRequests import OBSRequest, request_error_handler
 
@@ -14,9 +15,10 @@ class StreamRequests(OBSRequest):
 
     @staticmethod
     @request_error_handler
-    def toggle_stream(obs: obsws):
+    def toggle_stream(obs: obsws) -> bool:
         """ToggleStream"""
-        obs.call(requests.ToggleStream())
+        request_body = obs.call(requests.ToggleStream())
+        return convert_single(request_body, "outputActive")
 
     @staticmethod
     @request_error_handler
