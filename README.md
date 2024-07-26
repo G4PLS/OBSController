@@ -18,8 +18,8 @@ The current Request status that is Implemented in the backend, using [this](http
 - [X] Ui
 
 ## SET/POST/EVENT
-- [ ] General
-- [ ] Config
+- [X] General (UNTESTED)
+- [X] Config (UNTESTED)
 - [X] Sources (UNTESTED)
 - [X] Scenes (UNTESTED)
 - [X] Inputs (UNTESTED)
