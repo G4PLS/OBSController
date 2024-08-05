@@ -1,4 +1,4 @@
-from typing import Tuple, Callable, Dict
+from typing import Tuple, Callable, Dict, Type
 
 from GtkHelper.GtkHelper import ComboRow
 
@@ -6,8 +6,14 @@ import gi
 
 from ..OBSAction import OBSAction
 
-from .Start_Record import StartRecord
-from .Stop_Record import StopRecord
+from .StartRecord import StartRecord
+from .StopRecord import StopRecord
+from .Pause_Record import PauseRecord
+from .ResumeRecord import ResumeRecord
+from .ToggleRecord import ToggleRecord
+from .TogglePause import TogglePause
+
+from ..SubAction import SubAction
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
@@ -17,12 +23,17 @@ class RecordAction(OBSAction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.action_translation: Dict[str, Tuple[str, Callable]] = {
-            "start_record": ("Start Recording", StartRecord.execute),
-            "stop_record": ("Stop Recording", StopRecord.execute)
+        self.action_translation: Dict[str, Tuple[str, Type[SubAction]]] = {
+            "start_record": ("Start Recording", StartRecord),
+            "stop_record": ("Stop Recording", StopRecord),
+            "pause_record": ("Pause Recording", PauseRecord),
+            "resume_record": ("Resume Recording", ResumeRecord),
+            "toggle_record": ("Toggle Recording", ToggleRecord),
+            "toggle_pause": ("Toggle Pause", TogglePause)
         }
 
         self.action_lookup: str = "start_record"
+        self.selected_action: SubAction = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
 
     def on_ready(self):
         self.load_settings()
@@ -81,11 +92,13 @@ class RecordAction(OBSAction):
         settings = self.get_settings()
 
         self.action_lookup = settings.get("action-lookup", self.action_lookup)
+        self.selected_action = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
 
     def on_action_changed(self, *args):
         settings = self.get_settings()
 
         self.action_lookup = self.action_model[self.action_row.combo_box.get_active()][1]
+        self.selected_action = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
 
         settings["action-lookup"] = self.action_lookup
         self.set_settings(settings)
@@ -95,4 +108,4 @@ class RecordAction(OBSAction):
     #
 
     def on_key_down(self):
-        self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
+        self.selected_action.on_click()

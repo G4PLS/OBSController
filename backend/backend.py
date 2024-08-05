@@ -1,24 +1,49 @@
+import asyncio
+import threading
+from typing import Type
+
 from streamcontroller_plugin_tools import BackendBase
 from OBSController import OBSController
+from OBSEventHandler import OBSEventHandler
 from Requests import *
 from loguru import logger as log
+from Events.OBSEvent import OBSEvent
+from obswebsocket import events
 
 class Backend(BackendBase):
     def __init__(self):
         super().__init__()
-        log.warning("STARTING BACKEND")
+        log.info("STARTING OBS BACKEND")
         self.obs_controller = OBSController()
         self.obs_controller.connect_to_obs(
-            host=self.get_setting("ip", "localhost"),
+            host=self.get_setting("ip-address", "localhost"),
             port=self.get_setting("port", 4455),
             password=self.get_setting("password", "")
         )
+
+        self.x = None
 
     def get_setting(self, key: str, default=None):
         return self.frontend.get_settings().get(key, default)
 
     def get_connected(self) -> bool:
         return self.obs_controller.connected
+
+    def test_connection(self):
+        self.obs_controller.connect_to_obs(
+            host=self.get_setting("ip-address", "localhost"),
+            port=self.get_setting("port", 4455),
+            password=self.get_setting("password", "")
+        )
+
+        return self.obs_controller.connected
+
+    def register_event(self, callback):
+        self.x = callback
+        self.obs_controller.obs_event.register(self.record_state_changed, events.RecordStateChanged)
+
+    def record_state_changed(self, message):
+        threading.Thread(target=self.x)
 
     #
     # RECORD

@@ -11,8 +11,7 @@ from ..internal.PluginConfig import PluginConfigButton
 class OBSAction(ActionBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.obs_config_window = OBSConfigWindow(self.plugin_base)
-
+        self.plugin_config = PluginConfigButton(self.plugin_base, OBSConfigWindow, True)
 
     def get_config_rows(self) -> "list[Adw.PreferencesRow]":
-        return [PluginConfigButton(self.plugin_base, OBSConfigWindow)]
+        return [self.plugin_config]
