@@ -9,6 +9,12 @@ class SubAction(ABC):
         self.plugin_base: PluginBase = plugin_base
         self.action_base: ActionBase = action_base
 
+    def on_ready(self):
+        pass
+
+    def on_update(self):
+        pass
+
     def build_ui(self):
         pass
 

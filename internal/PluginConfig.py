@@ -7,7 +7,6 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import (Gtk, Adw)
 
-
 class PluginConfigWindow(Adw.Window):
     def __init__(self, plugin_base: PluginBase, close_on_focus_lost: bool, *args, **kwargs):
         super().__init__(*args, **kwargs)

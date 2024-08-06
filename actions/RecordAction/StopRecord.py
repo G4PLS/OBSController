@@ -6,6 +6,3 @@ from ..SubAction import SubAction
 class StopRecord(SubAction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-    def on_click(self):
-        self.plugin_base.backend.stop_record()

@@ -34,9 +34,17 @@ class RecordAction(OBSAction):
 
         self.action_lookup: str = "start_record"
         self.selected_action: SubAction = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
+        self.c = 0
 
     def on_ready(self):
+        self.c += 1
+
+        if self.c > 1:
+            return
+
+        print(f"loaded {self.c} times. {self.deck_controller.index_to_coords(self.get_own_action_index())}")
         self.load_settings()
+        self.selected_action.on_ready()
 
     def get_config_rows(self) -> "list[Adw.PreferencesRow]":
         base_config = super().get_config_rows()
@@ -100,6 +108,9 @@ class RecordAction(OBSAction):
         self.action_lookup = self.action_model[self.action_row.combo_box.get_active()][1]
         self.selected_action = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
 
+        self.set_media(image=None)
+        self.selected_action.on_ready()
+
         settings["action-lookup"] = self.action_lookup
         self.set_settings(settings)
 
@@ -109,3 +120,6 @@ class RecordAction(OBSAction):
 
     def on_key_down(self):
         self.selected_action.on_click()
+
+    def on_tick(self):
+        self.selected_action.on_tick()

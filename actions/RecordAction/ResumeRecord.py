@@ -6,6 +6,3 @@ from ..SubAction import SubAction
 class ResumeRecord(SubAction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-    def on_click(self):
-        self.plugin_base.backend.resume_record()

@@ -15,7 +15,7 @@ from loguru import logger as log
 
 
 class IpEntryRow(Adw.PreferencesRow):
-    __gtype_name__ = "IpEntryRow"
+    __gtype_name__ = "IpEntryRow2"
     __gsignals__ = {
         'ip-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
@@ -143,7 +143,7 @@ class IpEntryRow(Adw.PreferencesRow):
 
 
 class HostnameEntryRow(Adw.PreferencesRow):
-    __gtype_name__ = "HostnameEntryRow"
+    __gtype_name__ = "HostnameEntryRow2"
     __gsignals__ = {
         'hostname-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
@@ -204,7 +204,7 @@ class HostnameEntryRow(Adw.PreferencesRow):
 
 
 class NetworkEntryRow(Adw.PreferencesRow):
-    __gtype_name__ = "NetworkEntryRow"
+    __gtype_name__ = "NetworkEntryRow2"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -251,22 +251,6 @@ class NetworkEntryRow(Adw.PreferencesRow):
         self.hostname_box.set_hostname_by_ip(ip_address)
 
 
-class SaveRow(Adw.PreferencesRow):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.main_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, margin_start=10, margin_end=10, margin_top=5, margin_bottom=5)
-        self.set_child(self.main_box)
-
-        self.save_button = Gtk.Button(label="Save", css_classes=["confirm-button"], hexpand=True)
-        self.dismiss_button = Gtk.Button(label="Dismiss", hexpand=True)
-        self.reset_button = Gtk.Button(label="Reset")
-
-        self.main_box.append(self.save_button)
-        self.main_box.append(self.dismiss_button)
-        self.main_box.append(self.reset_button)
-
-
 class OBSConfigWindow(PluginConfigWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -274,6 +258,8 @@ class OBSConfigWindow(PluginConfigWindow):
 
     def build(self):
         self.network_entry = NetworkEntryRow()
+        self.network_entry.ip_box.connect("ip-changed", self.ip_changed)
+        self.network_entry.hostname_box.connect("hostname-changed", self.hostname_changed)
 
         self.port = Adw.SpinRow.new_with_range(0, 65535, 1)
         self.port.set_title("Port")
@@ -297,17 +283,10 @@ class OBSConfigWindow(PluginConfigWindow):
 
         self.connection_button.connect("clicked", self.connection_test)
 
-        # Saving
-        self.confirmation_row = SaveRow()
-        self.confirmation_row.save_button.connect("clicked", self.save_clicked)
-        self.confirmation_row.dismiss_button.connect("clicked", lambda *args: self.destroy())
-        self.confirmation_row.reset_button.connect("clicked", self.reset_clicked)
-
         self.append(self.network_entry)
         self.append(self.port)
         self.append(self.password)
         self.append(self.test_connection)
-        self.append(self.confirmation_row)
 
     def save_clicked(self, *args):
         settings = self.plugin_base.get_settings()
@@ -348,3 +327,15 @@ class OBSConfigWindow(PluginConfigWindow):
             self.connection_status.set_text("Connected")
         else:
             self.connection_status.set_text("Not Connected")
+
+    def ip_changed(self, entry, ip_address):
+        settings = self.plugin_base.get_settings()
+
+        settings["ip-address"] = ip_address
+        self.plugin_base.set_settings(settings)
+
+    def hostname_changed(self, entry, hostname):
+        settings = self.plugin_base.get_settings()
+
+        settings["hostname"] = hostname
+        self.plugin_base.set_settings(settings)
