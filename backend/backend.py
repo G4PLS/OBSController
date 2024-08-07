@@ -2,21 +2,28 @@ from streamcontroller_plugin_tools import BackendBase
 from OBSController import OBSController
 from loguru import logger as log
 
+from RPYCEventHandler import RPYCEventHandler
+
 class Backend(BackendBase):
     def __init__(self):
         super().__init__()
         log.info("STARTING OBS BACKEND")
-        self.obs_controller = OBSController()
+        self.obs_controller = OBSController(self)
         self.obs_controller.connect_to_obs(
             host=self.get_setting("ip-address", "localhost"),
             port=self.get_setting("port", 4455),
             password=self.get_setting("password", "")
         )
 
-        self.callback = None
+        self.event_handler = RPYCEventHandler(self.frontend)
+
+        self.obs_controller.register()
 
     def get_setting(self, key: str, default=None):
         return self.frontend.get_settings().get(key, default)
+
+    def trigger(self, *args):
+        self.frontend.trigger(*args)
 
     def test_connection(self):
         self.obs_controller.connect_to_obs(
@@ -24,10 +31,6 @@ class Backend(BackendBase):
             port=self.get_setting("port", 4455),
             password=self.get_setting("password", "")
         )
-
-    def register(self, callback: callable):
-        self.callback = callback
-        self.obs_controller.register(self.callback)
 
     #
     # RECORDING

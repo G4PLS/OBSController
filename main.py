@@ -1,6 +1,7 @@
 # Import StreamController modules
 import os
 from .actions.RecordAction.Record import RecordAction
+from .internal.RPYCEventHandler import RPYCEventHandler
 
 from src.backend.PluginManager.ActionHolder import ActionHolder
 from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
@@ -33,7 +34,12 @@ class OBSController(PluginBase):
         )
         self.add_action_holder(self.record_action_holder)
 
+        self.event_handler = RPYCEventHandler(self.backend)
+
         self.register()
+
+    def trigger(self, *args):
+        print("HEY HEY HEY")
 
     def init_vars(self):
         self.lm = self.locale_manager
