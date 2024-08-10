@@ -1,4 +1,5 @@
 import inspect
+import pickle
 from functools import wraps
 
 import obsws_python as obsws
@@ -15,6 +16,7 @@ def event_trigger_decorator(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         event_name = func.__name__
+
         self.frontend.trigger(event_name, to_dict(args[0]), **kwargs)
         return func(self, *args, **kwargs)
 

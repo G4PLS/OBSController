@@ -7,17 +7,10 @@ class TogglePause(SubAction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         print("REGISTERING")
-        self.plugin_base.register_event("on_current_program_scene_changed", self.a)
-        self.plugin_base.register_event("on_exit_started", self.b)
+        self.plugin_base.connect_to_event("com.gapls.OBSController::OBSEvent", self.a)
 
-    def a(self, *args):
-        x = 0
-        while x < 9848894:
-            print(x)
-            x += 1
-
-        print("A")
-        print(args[0].get("scene_name", "NO"))
+    def a(self, event_id: str, obs_event_name: str, message: dict):
+        print(message.get("scene_name"))
 
     def b(self, *args):
         while True:

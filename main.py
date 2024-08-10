@@ -1,7 +1,10 @@
 # Import StreamController modules
+import copy
 import os
+import pickle
+
+from src.backend.PluginManager.EventHolder import EventHolder
 from .actions.RecordAction.Record import RecordAction
-from .internal.BackendEventMessage import EventMessage
 
 
 from src.backend.PluginManager.ActionHolder import ActionHolder
@@ -35,34 +38,40 @@ class OBSController(PluginBase):
         )
         self.add_action_holder(self.record_action_holder)
 
-        self.callables: dict[str, list[callable]] = {}
+        self.backend_event = EventHolder(
+            plugin_base=self,
+            event_id="com.gapls.OBSController::OBSEvent"
+        )
+        self.add_event_holder(self.backend_event)
 
         self.register()
 
     def trigger(self, event_name, message):
-        transformed_message = EventMessage(message)
+        message = copy.deepcopy(message)
 
-        if not self.callables.__contains__(event_name):
-            return
+        #if not self.callables.__contains__(event_name):
+        #    return
 
-        for callback in self.callables[event_name]:
-            callback(transformed_message)
+        self.backend_event.trigger_event(event_name, message)
 
-    def register_event(self, event_name, callback):
-        if not self.callables.__contains__(event_name):
-            self.callables[event_name] = []
+        #for callback in self.callables[event_name]:
+        #    callback(transformed_message)
 
-        if self.callables[event_name].__contains__(callback):
-            return
+    #def register_event(self, event_name, callback):
+    #    if not self.callables.__contains__(event_name):
+    #        self.callables[event_name] = []
+#
+    #    if self.callables[event_name].__contains__(callback):
+    #        return
+#
+    #    self.callables[event_name].append(callback)
 
-        self.callables[event_name].append(callback)
-
-    def unregister_event(self, event_name, callback):
-        if not self.callables.__contains__(event_name):
-            return
-
-        if self.callables[event_name].__contains__(callback):
-            self.callables[event_name].remove(callback)
+    #def unregister_event(self, event_name, callback):
+    #    if not self.callables.__contains__(event_name):
+    #        return
+#
+    #    if self.callables[event_name].__contains__(callback):
+    #        self.callables[event_name].remove(callback)
 
     def init_vars(self):
         self.lm = self.locale_manager
