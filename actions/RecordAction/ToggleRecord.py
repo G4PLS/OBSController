@@ -3,7 +3,11 @@ from ..SubAction import SubAction
 class ToggleRecord(SubAction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.plugin_base.backend.register(self.on_record_state_changed)
+
+        # Change to use correct event
+        self.plugin_base.connect_to_event("com.gapls.OBSController::OBSEvent",
+                                          "on_current_program_scene_changed",
+                                          self.on_record_state_changed)
 
     def on_ready(self):
         pass

@@ -3,14 +3,15 @@ import copy
 import os
 import pickle
 
-from src.backend.PluginManager.EventHolder import EventHolder
 from .actions.RecordAction.Record import RecordAction
-
+from .internal.OBSEventHolder import OBSEventHolder
 
 from src.backend.PluginManager.ActionHolder import ActionHolder
 from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
 from src.backend.PluginManager.PluginBase import PluginBase
 from src.backend.DeckManagement.InputIdentifier import Input
+
+from loguru import logger as log
 
 
 class OBSController(PluginBase):
@@ -38,40 +39,37 @@ class OBSController(PluginBase):
         )
         self.add_action_holder(self.record_action_holder)
 
-        self.backend_event = EventHolder(
+        self.obs_event_holder = OBSEventHolder(
             plugin_base=self,
             event_id="com.gapls.OBSController::OBSEvent"
         )
-        self.add_event_holder(self.backend_event)
+        self.add_event_holder(self.obs_event_holder)
 
         self.register()
 
-    def trigger(self, event_name, message):
-        message = copy.deepcopy(message)
-
-        #if not self.callables.__contains__(event_name):
-        #    return
-
-        self.backend_event.trigger_event(event_name, message)
-
-        #for callback in self.callables[event_name]:
-        #    callback(transformed_message)
-
-    #def register_event(self, event_name, callback):
-    #    if not self.callables.__contains__(event_name):
-    #        self.callables[event_name] = []
-#
-    #    if self.callables[event_name].__contains__(callback):
-    #        return
-#
-    #    self.callables[event_name].append(callback)
-
-    #def unregister_event(self, event_name, callback):
-    #    if not self.callables.__contains__(event_name):
-    #        return
-#
-    #    if self.callables[event_name].__contains__(callback):
-    #        self.callables[event_name].remove(callback)
-
     def init_vars(self):
         self.lm = self.locale_manager
+
+    def trigger(self, event_name, message):
+        """
+        Triggers the frontends Event Holder to make the callback async and open up further events faster
+        @param event_name: The OBS Function name that got triggered by the backends obs websocket connection
+        @param message: The message data as a netref
+        """
+        message = copy.deepcopy(message)
+
+        self.obs_event_holder.trigger_event(event_name, message)
+
+    def connect_to_event(self, event_id: str, obs_event_name: str, callback: callable) -> None:
+        if event_id in self.event_holders:
+            self.event_holders[event_id].add_listener(obs_event_name=obs_event_name, callback=callback)
+        else:
+            log.warning(f"{event_id} does not exist in {self.plugin_name}")
+
+    def connect_to_event_directly(self, plugin_id: str, event_id: str, obs_event_name: str, callback: callable) -> None:
+        plugin = self.get_plugin(plugin_id)
+
+        if plugin is None:
+            log.warning(f"{plugin_id} does not exist")
+        else:
+            plugin.connect_to_event(event_id=event_id, obs_event_name=obs_event_name, callback=callback)
