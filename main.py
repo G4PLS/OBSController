@@ -3,7 +3,7 @@ import copy
 import os
 import pickle
 
-from .actions.RecordAction.Record import RecordAction
+from .actions.RecordAction.RecordAction import RecordAction
 from .internal.OBSEventHolder import OBSEventHolder
 
 from src.backend.PluginManager.ActionHolder import ActionHolder
