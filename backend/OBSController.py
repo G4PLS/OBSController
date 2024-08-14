@@ -1,7 +1,6 @@
 import asyncio
 import threading
 
-import fipv
 import obsws_python as obsws
 from obsws_python.error import OBSSDKError
 
@@ -9,6 +8,14 @@ from EventController import EventController
 from OBSWSConverter import to_dict
 
 from loguru import logger as log
+
+try:
+    import fipv
+    fipv_import: bool = True
+except ImportError as e:
+    log.error("Error importing fipv, using ipaddress as fallback")
+    import ipaddress
+    fipv_import: bool = False
 
 class OBSController:
     def __init__(self, backend):
@@ -19,13 +26,21 @@ class OBSController:
     def validate_host(self, host: str):
         if host == 'localhost':
             return True
-        return fipv.ipv4(host)
+
+        if fipv_import:
+            return fipv.ipv4(host)
+        else:
+            try:
+                ipaddress.ip_address(host)
+                return True
+            except ValueError as e:
+                log.error(f"{host} is not a valid ip address")
+                return False
 
     def _connect(self, **kwargs):
         try:
             self.request_client = obsws.ReqClient(**kwargs)
             self.event_client = EventController(frontend=self.backend.frontend, **kwargs)
-            #self.event_client = EventController(frontend=None, **kwargs)
         except Exception as e:
             log.error(f"Error while connecting to OBS: {e} | Used args: {kwargs}")
             return
