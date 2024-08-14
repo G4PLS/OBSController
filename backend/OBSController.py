@@ -57,14 +57,16 @@ class OBSController:
         if not self.validate_host(host):
             return False
 
-        if self.request_client:
+        if self.request_client or self.connected:
             self.request_client.disconnect()
-        if self.event_client:
+        if self.event_client or self.connected:
             self.event_client.disconnect()
+
+        self.connected = False
 
         try:
             self._connect(host=host, port=port, password=password, timeout=timeout, **kwargs)
-        except OBSSDKError as e:
+        except Exception as e:
             log.error(f"Failed to connect to OBS: {e}")
             log.error(f"Data used to connect to OBS: Host-{host} | Port-{port}")
 
@@ -82,6 +84,6 @@ class OBSController:
 
                 if hasattr(return_args, "__dict__"):
                     return to_dict(return_args)
-                print(return_args)
-        except OBSSDKError as e:
+        except Exception as e:
             log.error(f"Not able to call function: {function_name}. Error: {e}")
+            self.connected = False
