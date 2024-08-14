@@ -18,7 +18,10 @@ class Backend(BackendBase):
     def get_setting(self, key: str, default=None):
         return self.frontend.get_settings().get(key, default)
 
-    def test_connection(self):
+    def get_connected(self) -> bool:
+        return self.obs_controller.connected
+
+    def reconnect(self):
         self.obs_controller.connect_to_obs(
             host=self.get_setting("ip-address", "localhost"),
             port=self.get_setting("port", 4455),

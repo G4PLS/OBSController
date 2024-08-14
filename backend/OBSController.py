@@ -22,6 +22,7 @@ class OBSController:
         self.request_client: obsws.ReqClient = None
         self.event_client: EventController = None
         self.backend = backend
+        self.connected = False
 
     def validate_host(self, host: str):
         if host == 'localhost':
@@ -37,10 +38,14 @@ class OBSController:
                 log.error(f"{host} is not a valid ip address")
                 return False
 
+    def on_disconnect(self, *args):
+        self.connected = False
+
     def _connect(self, **kwargs):
         try:
             self.request_client = obsws.ReqClient(**kwargs)
-            self.event_client = EventController(frontend=self.backend.frontend, **kwargs)
+            self.event_client = EventController(frontend=self.backend.frontend, on_disconnect=self.on_disconnect, **kwargs)
+            self.connected = True
         except Exception as e:
             log.error(f"Error while connecting to OBS: {e} | Used args: {kwargs}")
             return
@@ -64,6 +69,9 @@ class OBSController:
             log.error(f"Data used to connect to OBS: Host-{host} | Port-{port}")
 
     def send_request(self, function_name, *args):
+        if not self.connected:
+            return
+
         try:
             if not hasattr(self.request_client, function_name):
                 return

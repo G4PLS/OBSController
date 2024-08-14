@@ -18,11 +18,12 @@ def event_trigger_decorator(func):
 
 
 class EventController(obsws.EventClient):
-    def __init__(self, frontend, **kwargs):
+    def __init__(self, frontend, on_disconnect, **kwargs):
         super().__init__(**kwargs)
 
         self.callback.register(self.get_event_methods())
         self.frontend = frontend
+        self.on_disconnect: callable = on_disconnect
 
     def get_event_methods(self):
         return [
@@ -36,7 +37,7 @@ class EventController(obsws.EventClient):
 
     @event_trigger_decorator
     def on_exit_started(self, *args):
-        pass
+        self.on_disconnect(*args)
 
     @event_trigger_decorator
     def on_vendor_event(self, *args):
