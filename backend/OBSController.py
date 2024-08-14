@@ -87,6 +87,6 @@ class OBSController:
                 if hasattr(return_args, "__dict__"):
                     return to_dict(return_args)
         except Exception as e:
-            log.error(f"Not able to call function: {function_name}. Error: {e}")
+            log.error(f"Not able to call function: {function_name}, connection state will be set to False. Error: {e}")
             self.connected = False
             return None
