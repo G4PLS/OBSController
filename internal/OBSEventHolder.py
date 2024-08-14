@@ -1,7 +1,8 @@
 import asyncio
 
-from src.backend.PluginManager.EventHolder import EventHolder
 from loguru import logger as log
+from src.backend.PluginManager.EventHolder import EventHolder
+
 
 class OBSEventHolder(EventHolder):
     def __init__(self, plugin_base: "PluginBase", event_id: str):

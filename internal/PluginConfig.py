@@ -1,8 +1,8 @@
-from abc import abstractmethod, ABC
-
-from src.backend.PluginManager.PluginBase import PluginBase
+from abc import abstractmethod
 
 import gi
+from src.backend.PluginManager.PluginBase import PluginBase
+
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import (Gtk, Adw)

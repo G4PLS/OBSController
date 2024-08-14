@@ -1,12 +1,10 @@
-from abc import ABC
-
+import gi
 from src.backend.PluginManager.ActionBase import ActionBase
 from src.backend.PluginManager.PluginBase import PluginBase
 
-import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw
+from gi.repository import Adw
 
 
 class ActionHandler(Adw.PreferencesGroup):

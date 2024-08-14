@@ -1,8 +1,7 @@
-import inspect
-import pickle
 from functools import wraps
 
 import obsws_python as obsws
+
 from OBSWSConverter import to_dict
 
 

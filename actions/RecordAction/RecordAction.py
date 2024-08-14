@@ -1,22 +1,22 @@
 import os.path
 from typing import Tuple, Dict, Type
 
+import gi
 from GtkHelper.GtkHelper import ComboRow
 
-import gi
-
-from ..OBSAction import OBSAction
+from .SubAction.PauseRecord import PauseRecord
 from .SubAction.RecordActionHandler import RecordActionHandler
+from .SubAction.ResumeRecord import ResumeRecord
 from .SubAction.StartRecording import StartRecording
 from .SubAction.StopRecording import StopRecording
 from .SubAction.TogglePause import TogglePause
 from .SubAction.ToggleRecord import ToggleRecord
-from .SubAction.ResumeRecord import ResumeRecord
-from .SubAction.PauseRecord import PauseRecord
+from ..OBSAction import OBSAction
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw
+from gi.repository import Gtk
+
 
 class RecordAction(OBSAction):
     def __init__(self, *args, **kwargs):

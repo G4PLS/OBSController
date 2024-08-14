@@ -1,10 +1,7 @@
-import asyncio
-
-from gi._gi import GObject
+import gi
 
 from ..internal.PluginConfig import PluginConfigWindow
 
-import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw, GObject, Pango

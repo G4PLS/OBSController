@@ -1,7 +1,9 @@
-from streamcontroller_plugin_tools import BackendBase
-from OBSController import OBSController
-from loguru import logger as log
 import rpyc
+from loguru import logger as log
+from streamcontroller_plugin_tools import BackendBase
+
+from OBSController import OBSController
+
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
 
 class Backend(BackendBase):

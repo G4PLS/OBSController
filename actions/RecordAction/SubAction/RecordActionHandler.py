@@ -1,11 +1,11 @@
 import os.path
 
+import gi
 from plugins.com_gapls_OBSController.actions.ActionHandler import ActionHandler
 
-import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw
+from gi.repository import Adw
 
 class RecordActionHandler(ActionHandler):
     def __init__(self, *args, **kwargs):

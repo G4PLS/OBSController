@@ -1,9 +1,9 @@
+import gi
 from src.backend.PluginManager.ActionBase import ActionBase
 
-import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw
+from gi.repository import Adw
 
 from ..internal.OBSConfig import OBSConfigWindow
 from ..internal.PluginConfig import PluginConfigButton

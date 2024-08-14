@@ -1,13 +1,8 @@
-import asyncio
-import threading
-
 import obsws_python as obsws
-from obsws_python.error import OBSSDKError
+from loguru import logger as log
 
 from EventController import EventController
 from OBSWSConverter import to_dict
-
-from loguru import logger as log
 
 try:
     import fipv
