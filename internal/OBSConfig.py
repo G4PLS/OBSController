@@ -15,7 +15,6 @@ from loguru import logger as log
 
 
 class IpEntryRow(Adw.PreferencesRow):
-    __gtype_name__ = "IpEntryRow2"
     __gsignals__ = {
         'ip-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
@@ -143,7 +142,6 @@ class IpEntryRow(Adw.PreferencesRow):
 
 
 class HostnameEntryRow(Adw.PreferencesRow):
-    __gtype_name__ = "HostnameEntryRow2"
     __gsignals__ = {
         'hostname-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
@@ -204,8 +202,6 @@ class HostnameEntryRow(Adw.PreferencesRow):
 
 
 class NetworkEntryRow(Adw.PreferencesRow):
-    __gtype_name__ = "NetworkEntryRow2"
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
