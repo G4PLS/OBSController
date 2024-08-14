@@ -39,6 +39,12 @@ class OBSController:
                 return False
 
     def on_disconnect(self, *args):
+        log.info("OBS got Closed, connection is getting closed aswell")
+        self.request_client.disconnect()
+        self.event_client.disconnect()
+        self.request_client = None
+        self.event_client = None
+
         self.connected = False
 
     def _connect(self, **kwargs):
@@ -48,6 +54,7 @@ class OBSController:
             self.connected = True
         except Exception as e:
             log.error(f"Error while connecting to OBS: {e} | Used args: {kwargs}")
+            self.connected = False
             return
 
         version = self.request_client.get_version()
@@ -87,3 +94,4 @@ class OBSController:
         except Exception as e:
             log.error(f"Not able to call function: {function_name}. Error: {e}")
             self.connected = False
+            return None
