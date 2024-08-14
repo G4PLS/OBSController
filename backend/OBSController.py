@@ -31,7 +31,7 @@ class OBSController:
             return
 
         version = self.request_client.get_version()
-        log.info(f"Successfully connected to OBS {version.obs_version} under {kwargs.get("host"):{kwargs.get("port")}}")
+        log.info(f"Successfully connected to OBS {version.obs_version} under {kwargs.get("host")}:{kwargs.get("port")}")
 
     def connect_to_obs(self, host: str = 'localhost', port: int = 4455, password: str = "", timeout: int = 60, **kwargs):
         if not self.validate_host(host):
