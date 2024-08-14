@@ -13,6 +13,18 @@ from src.backend.DeckManagement.InputIdentifier import Input
 
 from loguru import logger as log
 
+""" COLORS
+
+Background:
+Primary: [101, 124, 194, 255]
+Secondary: [48, 59, 92, 255]
+
+Element Color:
+Primary: [194, 206, 255, 255]
+Secondary: [82, 101, 158, 255]
+
+"""
+
 
 class OBSController(PluginBase):
     def __init__(self):
@@ -38,6 +50,10 @@ class OBSController(PluginBase):
             }
         )
         self.add_action_holder(self.record_action_holder)
+
+        #
+        # EVENT HOLDER
+        #
 
         self.obs_event_holder = OBSEventHolder(
             plugin_base=self,

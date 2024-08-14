@@ -1,19 +1,18 @@
-from typing import Tuple, Callable, Dict, Type
+import os.path
+from typing import Tuple, Dict, Type
 
 from GtkHelper.GtkHelper import ComboRow
 
 import gi
 
 from ..OBSAction import OBSAction
-
-from .StartRecord import StartRecord
-from .StopRecord import StopRecord
-from .Pause_Record import PauseRecord
-from .ResumeRecord import ResumeRecord
-from .ToggleRecord import ToggleRecord
-from .TogglePause import TogglePause
-
-from ..SubAction import SubAction
+from .SubAction.RecordActionHandler import RecordActionHandler
+from .SubAction.StartRecording import StartRecording
+from .SubAction.StopRecording import StopRecording
+from .SubAction.TogglePause import TogglePause
+from .SubAction.ToggleRecord import ToggleRecord
+from .SubAction.ResumeRecord import ResumeRecord
+from .SubAction.PauseRecord import PauseRecord
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
@@ -23,9 +22,9 @@ class RecordAction(OBSAction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.action_translation: Dict[str, Tuple[str, Type[SubAction]]] = {
-            "start_record": ("Start Recording", StartRecord),
-            "stop_record": ("Stop Recording", StopRecord),
+        self.action_translation: Dict[str, Tuple[str, Type[RecordActionHandler]]] = {
+            "start_record": ("Start Recording", StartRecording),
+            "stop_record": ("Stop Recording", StopRecording),
             "pause_record": ("Pause Recording", PauseRecord),
             "resume_record": ("Resume Recording", ResumeRecord),
             "toggle_record": ("Toggle Recording", ToggleRecord),
@@ -33,35 +32,38 @@ class RecordAction(OBSAction):
         }
 
         self.action_lookup: str = "start_record"
-        self.selected_action: SubAction = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
-        self.c = 0
+        self.selected_action: RecordActionHandler = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
 
     def on_ready(self):
-        self.c += 1
-
-        if self.c > 1:
-            return
-
-        print(f"loaded {self.c} times. {self.deck_controller.index_to_coords(self.get_own_action_index())}")
         self.load_settings()
         self.selected_action.on_ready()
 
-    def get_config_rows(self) -> "list[Adw.PreferencesRow]":
-        base_config = super().get_config_rows()
+    def on_update(self):
+        self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "record.gif"), update=True)
+
+    def get_custom_config_area(self):
+        self.ui = super().get_custom_config_area()
+
         self.action_model = Gtk.ListStore.new([str, str])
 
         self.action_row = ComboRow(title="Action", model=self.action_model)
+        self.ui.add(self.action_row)
 
         self.action_renderer = Gtk.CellRendererText()
         self.action_row.combo_box.pack_start(self.action_renderer, True)
         self.action_row.combo_box.add_attribute(self.action_renderer, "text", 0)
 
+        # LOAD CUSTOM UI
+        self.ui.add(self.selected_action)
+
+        # SETUP UI SETTINGS
         self.load_action_model()
         self.load_ui_settings()
 
+        # CONNECT ALL EVENTS
         self.connect_events()
 
-        return base_config + [self.action_row]
+        return self.ui
 
     #
     # LOAD
@@ -96,20 +98,30 @@ class RecordAction(OBSAction):
         else:
             self.action_row.combo_box.set_active(-1)
 
+        self.selected_action.load_ui_settings()
+
     def load_settings(self):
         settings = self.get_settings()
 
         self.action_lookup = settings.get("action-lookup", self.action_lookup)
         self.selected_action = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
 
+        self.selected_action.load_settings()
+
     def on_action_changed(self, *args):
         settings = self.get_settings()
+
+        self.ui.remove(self.selected_action)
+        del self.selected_action
 
         self.action_lookup = self.action_model[self.action_row.combo_box.get_active()][1]
         self.selected_action = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
 
-        self.set_media(image=None)
+        self.ui.add(self.selected_action)
+
         self.selected_action.on_ready()
+        self.selected_action.load_settings()
+        self.selected_action.load_ui_settings()
 
         settings["action-lookup"] = self.action_lookup
         self.set_settings(settings)

@@ -6,6 +6,7 @@ import obsws_python as obsws
 from obsws_python.error import OBSSDKError
 
 from EventController import EventController
+from OBSWSConverter import to_dict
 
 from loguru import logger as log
 
@@ -26,7 +27,7 @@ class OBSController:
             self.event_client = EventController(frontend=self.backend.frontend, **kwargs)
             #self.event_client = EventController(frontend=None, **kwargs)
         except Exception as e:
-            log.error(f"Error while connecting to OBS: {e}")
+            log.error(f"Error while connecting to OBS: {e} | Used args: {kwargs}")
             return
 
         version = self.request_client.get_version()
@@ -46,3 +47,18 @@ class OBSController:
         except OBSSDKError as e:
             log.error(f"Failed to connect to OBS: {e}")
             log.error(f"Data used to connect to OBS: Host-{host} | Port-{port}")
+
+    def send_request(self, function_name, *args):
+        try:
+            if not hasattr(self.request_client, function_name):
+                return
+
+            method = getattr(self.request_client, function_name)
+            if callable(method):
+                return_args = method(*args)
+
+                if hasattr(return_args, "__dict__"):
+                    return to_dict(return_args)
+                print(return_args)
+        except OBSSDKError as e:
+            log.error(f"Not able to call function: {function_name}. Error: {e}")

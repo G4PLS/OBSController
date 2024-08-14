@@ -13,5 +13,8 @@ class OBSAction(ActionBase):
         super().__init__(*args, **kwargs)
         self.plugin_config = PluginConfigButton(self.plugin_base, OBSConfigWindow, True)
 
-    def get_config_rows(self) -> "list[Adw.PreferencesRow]":
-        return [self.plugin_config]
+    def get_custom_config_area(self):
+        self.ui = Adw.PreferencesGroup()
+        self.ui.add(self.plugin_config)
+
+        return self.ui

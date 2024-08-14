@@ -30,30 +30,30 @@ class Backend(BackendBase):
     #
 
     def get_record_status(self):
-        return self.obs_controller.get_record_status()
+        return self.obs_controller.send_request("get_record_status")
 
     def toggle_record(self):
-        return self.obs_controller.toggle_record()
+        return self.obs_controller.send_request("toggle_record")
 
     def start_record(self):
-        self.obs_controller.start_record()
+        self.obs_controller.send_request("start_record")
 
     def stop_record(self):
-        return self.obs_controller.stop_record()
+        return self.obs_controller.send_request("stop_record")
 
     def toggle_pause(self):
-        self.obs_controller.toggle_record_pause()
+        self.obs_controller.send_request("toggle_record_pause")
 
     def pause_record(self):
-        self.obs_controller.pause_record()
+        self.obs_controller.send_request("pause_record")
 
     def resume_record(self):
-        self.obs_controller.resume_record()
+        self.obs_controller.send_request("resume_record")
 
     def split_record_file(self):
-        self.obs_controller.split_record_file()
+        self.obs_controller.send_request("split_record_file")
 
     def create_record_chapter(self, chapter_name):
-        self.obs_controller.create_record_chapter(chapter_name)
+        self.obs_controller.send_request("create_record_chapter", chapter_name)
 
 backend = Backend()
