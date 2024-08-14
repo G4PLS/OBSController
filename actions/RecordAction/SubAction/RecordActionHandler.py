@@ -1,6 +1,6 @@
 import os.path
 
-from plugins.OBSController.actions.ActionHandler import ActionHandler
+from .plugins.OBSController.actions.ActionHandler import ActionHandler
 
 import gi
 gi.require_version("Gtk", "4.0")
