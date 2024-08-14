@@ -4,4 +4,3 @@ rpyc==6.0.0
 serpent==1.41
 streamcontroller-plugin-tools>=2.0.1
 websocket-client==1.7.0
-fipv==1.0.0
