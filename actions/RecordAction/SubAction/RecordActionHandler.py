@@ -35,6 +35,7 @@ class RecordActionHandler(ActionHandler):
         self.connect_events()
 
     def connect_events(self):
+        self.show_status_switch.connect("notify::active", self.status_switch_changed)
         self.show_timecode_switch.connect("notify::active", self.timecode_switch_changed)
 
     def disconnect_events(self):
