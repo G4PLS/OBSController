@@ -1,6 +1,6 @@
 import obsws_python as obsws
-from obsws_python.error import OBSSDKRequestError
 from loguru import logger as log
+from obsws_python.error import OBSSDKRequestError
 
 from EventController import EventController
 from OBSWSConverter import to_dict

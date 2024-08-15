@@ -4,15 +4,13 @@ from typing import Tuple, Dict, Type
 import gi
 from GtkHelper.GtkHelper import ComboRow
 
-from .RecordActionHandler import RecordActionHandler
-
+from .Pause.PauseRecord import PauseRecord
+from .Pause.ResumeRecord import ResumeRecord
+from .Pause.TogglePause import TogglePause
 from .Record.StartRecording import StartRecording
 from .Record.StopRecording import StopRecording
 from .Record.ToggleRecord import ToggleRecord
-from .Pause.ResumeRecord import ResumeRecord
-from .Pause.PauseRecord import PauseRecord
-from .Pause.TogglePause import TogglePause
-
+from .RecordActionHandler import RecordActionHandler
 from ..OBSAction import OBSAction
 
 gi.require_version("Gtk", "4.0")
