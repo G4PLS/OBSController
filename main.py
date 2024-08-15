@@ -2,6 +2,7 @@
 import copy
 import os
 
+from gi.repository import Gtk
 from loguru import logger as log
 from src.backend.DeckManagement.InputIdentifier import Input
 from src.backend.PluginManager.ActionHolder import ActionHolder
@@ -60,6 +61,9 @@ class OBSController(PluginBase):
         self.add_event_holder(self.obs_event_holder)
 
         self.register()
+
+    def get_selector_icon(self) -> Gtk.Widget:
+        return Gtk.Image(file=os.path.join(self.PATH, "assets", "obs.svg"))
 
     def init_vars(self):
         self.lm = self.locale_manager
