@@ -4,13 +4,16 @@ from typing import Tuple, Dict, Type
 import gi
 from GtkHelper.GtkHelper import ComboRow
 
-from .SubAction.PauseRecord import PauseRecord
-from .SubAction.RecordActionHandler import RecordActionHandler
-from .SubAction.ResumeRecord import ResumeRecord
-from .SubAction.StartRecording import StartRecording
-from .SubAction.StopRecording import StopRecording
-from .SubAction.TogglePause import TogglePause
-from .SubAction.ToggleRecord import ToggleRecord
+
+from data.plugins.com_gapls_OBSController.actions.RecordAction.RecordActionHandler import RecordActionHandler
+
+from .Record.StartRecording import StartRecording
+from .Record.StopRecording import StopRecording
+from .Record.ToggleRecord import ToggleRecord
+from .Pause.ResumeRecord import ResumeRecord
+from .Pause.PauseRecord import PauseRecord
+from .Pause.TogglePause import TogglePause
+
 from ..OBSAction import OBSAction
 
 gi.require_version("Gtk", "4.0")
