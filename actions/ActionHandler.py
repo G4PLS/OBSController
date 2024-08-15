@@ -36,3 +36,6 @@ class ActionHandler(Adw.PreferencesGroup):
 
     def load_ui_settings(self):
         pass
+
+    def show_error(self):
+        pass

@@ -1,22 +1,26 @@
 import os.path
 
 import gi
-from plugins.com_gapls_OBSController.actions.ActionHandler import ActionHandler
+from ...ActionHandler import ActionHandler
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw
 
 class RecordActionHandler(ActionHandler):
+    ASSET_SUBDIR = "Record"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.show_timecode: bool = False
         self.show_status: bool = False
 
-        self.recording = False
+        self.current_image: str = ""
+        self.display_error: bool = False
 
-        self.plugin_base.connect_to_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed", self.record_state_changed)
+        self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed", self.record_state_changed)
+        self.plugin_base.connect_to_event("com.gapls.OBSController::RecordStatusEvent", self.record_status_update)
 
     def on_ready(self) -> None:
         self.update_button()
@@ -32,7 +36,6 @@ class RecordActionHandler(ActionHandler):
 
     def connect_events(self):
         self.show_timecode_switch.connect("notify::active", self.timecode_switch_changed)
-        self.show_status_switch.connect("notify::active", self.status_switch_changed)
 
     def disconnect_events(self):
         try:
@@ -75,35 +78,53 @@ class RecordActionHandler(ActionHandler):
 
         self.connect_events()
 
-    def on_tick(self) -> None:
-        self.update_button()
-
     async def record_state_changed(self, event_id: str, obs_event: str, message: dict):
         self.update_button()
+
+    async def record_status_update(self, event_id: str, status):
+        self.set_record_status(status)
 
     def update_button(self):
         status = self.plugin_base.backend.get_record_status()
 
         if status is None:
-            self.action_base.show_error(0.5)
+            self.show_error()
             return
 
         self.set_record_status(status)
         self.set_timecode(status)
 
+    def on_tick(self):
+        self.update_button()
+
     def set_record_status(self, record_status):
-        if not self.show_status:
+        if not self.show_status or not record_status:
             self.action_base.set_media(None)
             self.action_base.set_background_color([0, 0, 0, 0])
             return
 
+        new_image = ""
+
         if record_status.get("output_active", False):
-            media_file = "recording_paused.svg" if record_status.get("output_paused", False) else "recording.svg"
-            self.action_base.set_media(media_path=self.get_media_path(media_file))
+            new_image = "recording_paused.svg" if record_status.get("output_paused", False) else "recording.svg"
             self.action_base.set_background_color([101, 124, 194, 255])
         else:
-            self.action_base.set_media(media_path=self.get_media_path("not_recording.svg"))
+            new_image = "not_recording.svg"
             self.action_base.set_background_color([48, 59, 92, 255])
+
+        self.update_status_image(new_image)
+
+    def update_status_image(self, new_image):
+        if new_image != self.current_image:
+            self.current_image = new_image
+            self.action_base.set_media(
+                media_path=self.get_media_path(self.current_image, subdir=self.ASSET_SUBDIR),
+                size=1,
+                update=True)
+        self.action_base.set_media(
+            media_path=self.get_media_path(self.current_image, subdir=self.ASSET_SUBDIR),
+            size=1,
+            update=False)
 
     def set_timecode(self, record_status):
         if self.show_timecode:
@@ -114,5 +135,11 @@ class RecordActionHandler(ActionHandler):
         else:
             self.action_base.set_top_label("")
 
-    def get_media_path(self, asset_name: str) -> str:
-        return os.path.join(self.plugin_base.PATH, "assets", "Record", asset_name)
+    def get_media_path(self, asset_name: str, subdir: str = None) -> str:
+        if subdir:
+            return os.path.join(self.plugin_base.PATH, "assets", subdir, asset_name)
+        else:
+            return os.path.join(self.plugin_base.PATH, "assets", asset_name)
+
+    def show_error(self):
+        self.action_base.set_media(media_path=self.get_media_path("connection_lost.svg"), size=0.75)

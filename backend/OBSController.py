@@ -1,4 +1,5 @@
 import obsws_python as obsws
+from obsws_python.error import OBSSDKRequestError
 from loguru import logger as log
 
 from EventController import EventController
@@ -86,7 +87,9 @@ class OBSController:
 
                 if hasattr(return_args, "__dict__"):
                     return to_dict(return_args)
+        except OBSSDKRequestError as e:
+            log.error(f"Error while sending request: {e}")
         except Exception as e:
             log.error(f"Not able to call function: {function_name}, connection state will be set to False. Error: {e}")
             self.connected = False
-            return None
+        return None

@@ -9,10 +9,12 @@ class TogglePause(RecordActionHandler):
 
         if paused:
             self.action_base.set_background_color([101, 124, 194, 255])
-            self.action_base.set_media(media_path=self.get_media_path("paused.svg"))
+            new_image = "paused.svg"
         else:
             self.action_base.set_background_color([48, 59, 92, 255])
-            self.action_base.set_media(media_path=self.get_media_path("not_paused.svg"))
+            new_image = "not_paused.svg"
+
+        self.update_status_image(new_image)
 
     def on_click(self) -> None:
         self.plugin_base.backend.toggle_pause()

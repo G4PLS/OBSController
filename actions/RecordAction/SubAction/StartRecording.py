@@ -23,6 +23,23 @@ class StartRecording(RecordActionHandler):
 
         self.connect_events()
 
+    def set_record_status(self, record_status):
+        if not self.show_status:
+            self.action_base.set_media(None)
+            self.action_base.set_background_color([0, 0, 0, 0])
+            return
+
+        if record_status.get("output_active", False):
+            new_image = "recording_paused.svg" \
+                if (record_status.get("output_paused", False) and self.show_pause_state) \
+                else "recording.svg"
+            self.action_base.set_background_color([101, 124, 194, 255])
+        else:
+            new_image = "not_recording.svg"
+            self.action_base.set_background_color([48, 59, 92, 255])
+
+        self.update_status_image(new_image)
+
     def connect_events(self):
         super().connect_events()
 
@@ -43,22 +60,6 @@ class StartRecording(RecordActionHandler):
         settings["show-pause-state"] = self.show_pause_state
 
         self.update_button()
-
-    def set_record_status(self, record_status):
-        if not self.show_status:
-            self.action_base.set_media(None)
-            self.action_base.set_background_color([0, 0, 0, 0])
-            return
-
-        if record_status.get("output_active", False):
-            media_file = "recording_paused.svg" \
-                if (record_status.get("output_paused", False) and self.show_pause_state) \
-                else "recording.svg"
-            self.action_base.set_media(media_path=self.get_media_path(media_file))
-            self.action_base.set_background_color([101, 124, 194, 255])
-        else:
-            self.action_base.set_media(media_path=self.get_media_path("not_recording.svg"))
-            self.action_base.set_background_color([48, 59, 92, 255])
 
     def on_click(self) -> None:
         self.plugin_base.backend.start_record()

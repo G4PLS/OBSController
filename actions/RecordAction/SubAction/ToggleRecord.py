@@ -51,14 +51,15 @@ class ToggleRecord(RecordActionHandler):
             return
 
         if record_status.get("output_active", False):
-            media_file = "recording_paused.svg" \
+            new_image = "recording_paused.svg" \
                 if (record_status.get("output_paused", False) and self.show_pause_state) \
                 else "recording.svg"
-            self.action_base.set_media(media_path=self.get_media_path(media_file))
             self.action_base.set_background_color([101, 124, 194, 255])
         else:
-            self.action_base.set_media(media_path=self.get_media_path("not_recording.svg"))
+            new_image = "not_recording.svg"
             self.action_base.set_background_color([48, 59, 92, 255])
+
+        self.update_status_image(new_image)
 
 
     def on_click(self) -> None:
