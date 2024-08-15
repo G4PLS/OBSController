@@ -9,7 +9,7 @@ from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
 from src.backend.PluginManager.PluginBase import PluginBase
 
 from .actions.RecordAction.RecordAction import RecordAction
-from .internal.OBSEventHolder import OBSEventHolder
+from .internal.EventHolders.OBSEventHolder import OBSEventHolder
 
 """ COLORS
 
@@ -74,16 +74,16 @@ class OBSController(PluginBase):
 
         self.obs_event_holder.trigger_event(event_name, message)
 
-    def connect_to_event(self, event_id: str, obs_event_name: str, callback: callable) -> None:
+    def connect_to_backend_event(self, event_id: str, obs_event_name: str, callback: callable) -> None:
         if event_id in self.event_holders:
             self.event_holders[event_id].add_listener(obs_event_name=obs_event_name, callback=callback)
         else:
             log.warning(f"{event_id} does not exist in {self.plugin_name}")
 
-    def connect_to_event_directly(self, plugin_id: str, event_id: str, obs_event_name: str, callback: callable) -> None:
+    def connect_to_backend_event_directly(self, plugin_id: str, event_id: str, obs_event_name: str, callback: callable) -> None:
         plugin = self.get_plugin(plugin_id)
 
         if plugin is None:
             log.warning(f"{plugin_id} does not exist")
         else:
-            plugin.connect_to_event(event_id=event_id, obs_event_name=obs_event_name, callback=callback)
+            plugin.connect_to_backend_event(event_id=event_id, obs_event_name=obs_event_name, callback=callback)
