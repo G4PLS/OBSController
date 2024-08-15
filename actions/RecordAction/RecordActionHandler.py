@@ -1,7 +1,8 @@
 import os.path
 
 import gi
-from data.plugins.com_gapls_OBSController.actions.ActionHandler import ActionHandler
+
+from ..ActionHandler import ActionHandler
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")

@@ -4,8 +4,7 @@ from typing import Tuple, Dict, Type
 import gi
 from GtkHelper.GtkHelper import ComboRow
 
-
-from data.plugins.com_gapls_OBSController.actions.RecordAction.RecordActionHandler import RecordActionHandler
+from .RecordActionHandler import RecordActionHandler
 
 from .Record.StartRecording import StartRecording
 from .Record.StopRecording import StopRecording
