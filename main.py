@@ -11,6 +11,8 @@ from src.backend.PluginManager.PluginBase import PluginBase
 
 from .actions.RecordAction.RecordAction import RecordAction
 from .actions.RecordAction.RecordChapterAction import RecordChapterAction
+from .actions.ReconnectAction import ReconnectAction
+
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
 
 """ COLORS
@@ -64,6 +66,19 @@ class OBSController(PluginBase):
         )
         self.add_action_holder(self.record_chapter_holder)
 
+        self.reconnect_action_holder = ActionHolder(
+            plugin_base=self,
+            action_base=ReconnectAction,
+            action_id_suffix="Reconnect",
+            action_name="Reconnect",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.UNSUPPORTED,
+                Input.Touchscreen: ActionInputSupport.UNSUPPORTED
+            }
+        )
+        self.add_action_holder(self.reconnect_action_holder)
+
         #
         # EVENT HOLDER
         #
@@ -77,7 +92,7 @@ class OBSController(PluginBase):
         self.register()
 
     def get_selector_icon(self) -> Gtk.Widget:
-        return Gtk.Image(file=os.path.join(self.PATH, "assets", "obs.svg"))
+        return Gtk.Image(file=os.path.join(self.PATH, "assets", "OBS", "obs.svg"))
 
     def init_vars(self):
         self.lm = self.locale_manager

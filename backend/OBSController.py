@@ -38,9 +38,7 @@ class OBSController:
                 return False
 
     def on_disconnect(self, *args):
-        log.info("OBS got Closed, connection is getting closed aswell")
-        self.request_client.disconnect()
-        self.event_client.disconnect()
+        log.info("OBS got Closed, connection is getting closed as well")
         self.request_client = None
         self.event_client = None
 

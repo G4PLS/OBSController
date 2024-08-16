@@ -32,6 +32,8 @@ class Backend(BackendBase):
             password=self.get_setting("password", "")
         )
 
+        return self.get_connected()
+
     #
     # RECORDING
     #
@@ -66,5 +68,8 @@ class Backend(BackendBase):
 
     def create_record_chapter(self, chapter_name):
         self.obs_controller.send_request("create_record_chapter", chapter_name)
+
+    def t(self):
+        return self.obs_controller.send_request("get_stream_service_settings")
 
 backend = Backend()

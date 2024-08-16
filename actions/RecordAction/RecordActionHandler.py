@@ -101,4 +101,4 @@ class RecordActionHandler(ActionHandler):
             return os.path.join(self.plugin_base.PATH, "assets", asset_name)
 
     def show_error(self):
-        self.action_base.set_media(media_path=self.get_media_path("connection_lost.svg"), size=0.75)
+        self.action_base.set_media(media_path=self.get_media_path("connection_lost.svg", "OBS"), size=0.75)
