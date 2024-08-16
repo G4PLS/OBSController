@@ -1,3 +1,5 @@
+import re
+
 import obsws_python as obsws
 from loguru import logger as log
 from obsws_python.error import OBSSDKRequestError
@@ -19,6 +21,7 @@ class OBSController:
         self.event_client: EventController = None
         self.backend = backend
         self.connected = False
+        self.available_requests: list[str] = []
 
     def validate_host(self, host: str):
         if host == 'localhost':
@@ -54,7 +57,9 @@ class OBSController:
             return
 
         version = self.request_client.get_version()
+        self.available_requests = version.available_requests
         log.info(f"Successfully connected to OBS {version.obs_version} under {kwargs.get('host', 'N/A')}:{kwargs.get('port', 'N/A')}")
+        log.info(f"OBS Websocket version: {version.obs_web_socket_version}")
 
     def connect_to_obs(self, host: str = 'localhost', port: int = 4455, password: str = "", timeout: int = 60, **kwargs):
         if not self.validate_host(host):
@@ -91,5 +96,22 @@ class OBSController:
             log.error(f"Error while sending request: {e}")
         except Exception as e:
             log.error(f"Not able to call function: {function_name}, connection state will be set to False. Error: {e}")
+            self.connected = False
+        return None
+
+    def send_custom_request(self, request_name, payload):
+        print(self.available_requests.__contains__(request_name))
+        try:
+            return self.request_client.send(request_name, payload)
+        except OBSSDKRequestError as e:
+            log.error(f"Error while sending request {request_name}: {e}")
+            pattern = r"returned code (\d+)"
+
+            match = re.search(pattern, str(e))
+
+            if match:
+                return match.group(1)
+        except Exception as e:
+            log.error(f"Something went wrong with request: {request_name}. Disconnecting! {e}")
             self.connected = False
         return None

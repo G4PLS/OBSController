@@ -10,6 +10,7 @@ from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
 from src.backend.PluginManager.PluginBase import PluginBase
 
 from .actions.RecordAction.RecordAction import RecordAction
+from .actions.RecordAction.RecordChapterAction import RecordChapterAction
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
 
 """ COLORS
@@ -49,6 +50,19 @@ class OBSController(PluginBase):
             }
         )
         self.add_action_holder(self.record_action_holder)
+
+        self.record_chapter_holder = ActionHolder(
+            plugin_base=self,
+            action_base=RecordChapterAction,
+            action_id_suffix="RecordChapter",
+            action_name="Record Chapter",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.UNSUPPORTED,
+                Input.Touchscreen: ActionInputSupport.UNSUPPORTED
+            }
+        )
+        self.add_action_holder(self.record_chapter_holder)
 
         #
         # EVENT HOLDER

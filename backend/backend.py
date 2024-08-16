@@ -1,3 +1,5 @@
+import copy
+
 import rpyc
 from loguru import logger as log
 from streamcontroller_plugin_tools import BackendBase
@@ -33,6 +35,10 @@ class Backend(BackendBase):
     #
     # RECORDING
     #
+
+    def custom_request(self, request_name: str, payload: dict):
+        payload = copy.deepcopy(payload)
+        return self.obs_controller.send_custom_request(request_name, payload)
 
     def get_record_status(self):
         return self.obs_controller.send_request("get_record_status")
