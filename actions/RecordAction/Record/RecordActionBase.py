@@ -118,8 +118,8 @@ class RecordActionBase(RecordActionHandler):
 
     def set_timecode(self, record_status):
         if self.show_timecode:
-            timecode = record_status.get("output_timecode", "00:00:00.000")
-            milliseconds = self.timestamp_to_milliseconds(timecode)
+            milliseconds = record_status.get("output_duration", 0)
+
             milliseconds += self.recording_offset
             timecode = self.milliseconds_to_timestamp(milliseconds)
 
