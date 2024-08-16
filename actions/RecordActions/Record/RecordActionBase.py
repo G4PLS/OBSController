@@ -7,6 +7,9 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw
 
 class RecordActionBase(RecordActionHandler):
+    """
+    Used for actual sub-actions specialized for Recording
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -126,17 +129,6 @@ class RecordActionBase(RecordActionHandler):
             self.action_base.set_top_label(timecode)
         else:
             self.action_base.set_top_label("")
-
-    def timestamp_to_milliseconds(self, timestamp: str) -> int:
-        hours, minutes, seconds = map(float, timestamp.split(":"))
-        seconds, milliseconds = divmod(seconds, 1)
-
-        total_milliseconds = ((int(hours) * 3600 * 1000) +
-                              (int(minutes) * 60 * 1000) +
-                              (int(seconds) * 1000) +
-                              milliseconds)
-
-        return total_milliseconds
 
     def milliseconds_to_timestamp(self, milliseconds: int, add_milliseconds: bool = False):
         hours = milliseconds // (3600 * 1000)

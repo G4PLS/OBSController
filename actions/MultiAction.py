@@ -1,45 +1,38 @@
-import os.path
-from typing import Tuple, Dict, Type
+from typing import Dict, Tuple, Type
 
 import gi
-from GtkHelper.GtkHelper import ComboRow
 
-from .Pause.PauseRecord import PauseRecord
-from .Pause.ResumeRecord import ResumeRecord
-from .Pause.TogglePause import TogglePause
-from .Record.StartRecording import StartRecording
-from .Record.StopRecording import StopRecording
-from .Record.ToggleRecord import ToggleRecord
-from .RecordActionHandler import RecordActionHandler
-from ..OBSAction import OBSAction
+from GtkHelper.GtkHelper import ComboRow
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Gtk
 
+from .ActionHandler import ActionHandler
+from .OBSAction import OBSAction
 
-class RecordAction(OBSAction):
+class MultiAction(OBSAction):
+    """
+    Specialized from of the OBSAction, makes it easier to create sub-action menus and define them
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.action_translation: Dict[str, Tuple[str, Type[RecordActionHandler]]] = {
-            "start_record": ("Start Recording", StartRecording),
-            "stop_record": ("Stop Recording", StopRecording),
-            "pause_record": ("Pause Recording", PauseRecord),
-            "resume_record": ("Resume Recording", ResumeRecord),
-            "toggle_record": ("Toggle Recording", ToggleRecord),
-            "toggle_pause": ("Toggle Pause", TogglePause)
-        }
+        self.action_translation: Dict[str, Tuple[str, Type[ActionHandler]]] = {}
 
-        self.action_lookup: str = "start_record"
-        self.selected_action: RecordActionHandler = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
+        self.action_lookup: str = ""
+        self.selected_action: Tuple[str, Type[ActionHandler]] = None
 
     def on_ready(self):
         self.load_settings()
-        self.selected_action.on_ready()
+
+        if self.selected_action:
+            self.selected_action.on_ready()
 
     def on_update(self):
-        self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "record.gif"), update=True)
+        if self.selected_action:
+            self.selected_action.on_update()
 
     def get_custom_config_area(self):
         self.ui = super().get_custom_config_area()
@@ -58,16 +51,8 @@ class RecordAction(OBSAction):
 
         # SETUP UI SETTINGS
         self.load_action_model()
-        self.load_ui_settings()
-
-        # CONNECT ALL EVENTS
-        self.connect_events()
 
         return self.ui
-
-    #
-    # LOAD
-    #
 
     def load_action_model(self):
         self.action_model.clear()
@@ -76,19 +61,14 @@ class RecordAction(OBSAction):
             if key:
                 self.action_model.append([display, key])
 
-    #
-    # EVENTS
-    #
-
     def connect_events(self):
         self.action_row.combo_box.connect("changed", self.on_action_changed)
 
     def disconnect_events(self):
-        self.action_row.combo_box.disconnect_by_func(self.on_action_changed)
-
-    #
-    # SETTINGS
-    #
+        try:
+            self.action_row.combo_box.disconnect_by_func(self.on_action_changed)
+        except:
+            pass
 
     def load_ui_settings(self):
         for i, action_lookup in enumerate(self.action_model):
@@ -104,9 +84,12 @@ class RecordAction(OBSAction):
         settings = self.get_settings()
 
         self.action_lookup = settings.get("action-lookup", self.action_lookup)
-        self.selected_action = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
 
-        self.selected_action.load_settings()
+        self.selected_action = self.action_translation.get(self.action_lookup, None)
+
+        if self.selected_action:
+            self.selected_action = self.selected_action[1](self.plugin_base, self)
+            self.selected_action.load_settings()
 
     def on_action_changed(self, *args):
         settings = self.get_settings()
@@ -126,12 +109,10 @@ class RecordAction(OBSAction):
         settings["action-lookup"] = self.action_lookup
         self.set_settings(settings)
 
-    #
-    # ACTION
-    #
-
     def on_key_down(self):
-        self.selected_action.on_click()
+        if self.selected_action:
+            self.selected_action.on_click()
 
     def on_tick(self):
-        self.selected_action.on_tick()
+        if self.selected_action:
+            self.selected_action.on_tick()

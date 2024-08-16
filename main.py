@@ -9,9 +9,9 @@ from src.backend.PluginManager.ActionHolder import ActionHolder
 from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
 from src.backend.PluginManager.PluginBase import PluginBase
 
-from .actions.RecordAction.RecordAction import RecordAction
-from .actions.RecordAction.RecordChapterAction import RecordChapterAction
-from .actions.ReconnectAction import ReconnectAction
+from .actions.RecordActions.RecordAction import RecordAction
+from .actions.RecordActions.RecordChapterAction import RecordChapterAction
+from .actions.OBSActions.ReconnectAction import ReconnectAction
 
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
 

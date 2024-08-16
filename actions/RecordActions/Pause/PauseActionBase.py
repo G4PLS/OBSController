@@ -7,6 +7,9 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw
 
 class PauseActionBase(RecordActionHandler):
+    """
+        Used for actual sub-actions specialized for Pausing the Recording
+        """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

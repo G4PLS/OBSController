@@ -1,4 +1,5 @@
 import gi
+
 from src.backend.PluginManager.ActionBase import ActionBase
 from src.backend.PluginManager.PluginBase import PluginBase
 
@@ -8,6 +9,9 @@ from gi.repository import Adw
 
 
 class ActionHandler(Adw.PreferencesGroup):
+    """
+    Base for the Sub-Actions, used to fill the MultiAction
+    """
     def __init__(self, plugin_base: PluginBase, action_base: ActionBase, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

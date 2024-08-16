@@ -1,10 +1,7 @@
 import os.path
 import threading
-import time
-from typing import Tuple, Dict, Type
 
 import gi
-from GtkHelper.GtkHelper import ComboRow
 
 from ..OBSAction import OBSAction
 
@@ -26,9 +23,12 @@ class RecordChapterAction(OBSAction):
         self.load_settings()
 
     def on_update(self):
-        self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "Record", "chapter.svg"), size=1, update=False)
+        self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "Record", "chapter.svg"), size=1)
         self.set_background_color([101, 124, 194, 255])
         self.set_chapter_label()
+
+    def on_tick(self):
+        self.set_background_color([101, 124, 194, 255])
 
     def get_custom_config_area(self):
         self.ui = super().get_custom_config_area()
@@ -105,11 +105,6 @@ class RecordChapterAction(OBSAction):
         status_code = self.plugin_base.backend.custom_request("CreateRecordChapter", {"chapterName": self.chapter_name})
 
         if status_code == "501" or status_code == "702":
-            threading.Timer(1, self.error).start()
-            self.show_error()
-
-    def error(self, duration):
-        self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "error.svg"), size=0.8)
-        self.set_top_label("")
-        time.sleep(duration)
-        self.on_update()
+            self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "error.svg"), size=0.8)
+            self.set_top_label("")
+            threading.Timer(0.5, self.on_update).start()

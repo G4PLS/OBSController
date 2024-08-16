@@ -1,14 +1,11 @@
 import os.path
 
-from src.backend.PluginManager.ActionBase import ActionBase
-
 import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw
 
-from .OBSAction import OBSAction
+from ..OBSAction import OBSAction
 
 class ReconnectAction(OBSAction):
     def __init__(self, *args, **kwargs):

@@ -9,6 +9,10 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw
 
 class RecordActionHandler(ActionHandler):
+    """
+    Base for the Record Sub-Actions, adding default behaviour and variables to make record actions easier to define
+    """
+
     ASSET_SUBDIR = "Record"
 
     def __init__(self, *args, **kwargs):
@@ -23,6 +27,9 @@ class RecordActionHandler(ActionHandler):
         self.plugin_base.connect_to_event("com.gapls.OBSController::RecordStatusEvent", self.record_status_update)
 
     def on_ready(self) -> None:
+        self.load_settings()
+
+    def on_update(self) -> None:
         self.update_button()
 
     def build_ui(self) -> None:
@@ -102,3 +109,4 @@ class RecordActionHandler(ActionHandler):
 
     def show_error(self):
         self.action_base.set_media(media_path=self.get_media_path("connection_lost.svg", "OBS"), size=0.75)
+        self.action_base.set_background_color([82, 101, 158, 255])
