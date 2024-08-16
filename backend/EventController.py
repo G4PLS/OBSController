@@ -10,8 +10,10 @@ def event_trigger_decorator(func):
     def wrapper(self, *args, **kwargs):
         event_name = func.__name__
 
+        return_type = func(self, *args, **kwargs)
         self.frontend.trigger(event_name, to_dict(args[0]), **kwargs)
-        return func(self, *args, **kwargs)
+
+        return return_type
 
     return wrapper
 

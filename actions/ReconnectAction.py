@@ -14,6 +14,11 @@ class ReconnectAction(OBSAction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_exit_started", self.obs_exit_event)
+
+    def obs_exit_event(self, *args):
+        self.update_status(self.plugin_base.backend.get_connected())
+
     def on_ready(self):
         self.update_status(self.plugin_base.backend.get_connected())
 
