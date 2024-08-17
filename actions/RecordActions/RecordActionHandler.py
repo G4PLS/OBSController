@@ -24,7 +24,6 @@ class RecordActionHandler(ActionHandler):
         self.display_error: bool = False
 
         self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed", self.record_state_changed)
-        self.plugin_base.connect_to_event("com.gapls.OBSController::RecordStatusEvent", self.record_status_update)
 
     def on_ready(self) -> None:
         self.load_settings()
@@ -70,9 +69,6 @@ class RecordActionHandler(ActionHandler):
 
     async def record_state_changed(self, event_id: str, obs_event: str, message: dict):
         self.update_button()
-
-    async def record_status_update(self, event_id: str, status):
-        self.set_record_status(status)
 
     def update_button(self):
         status = self.plugin_base.backend.get_record_status()

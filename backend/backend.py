@@ -35,10 +35,19 @@ class Backend(BackendBase):
         return self.get_connected()
 
     #
+    # CONFIG
+    #
+
+    def get_stream_service_settings(self):
+        return self.obs_controller.send_request("get_stream_service_settings")
+
+    #
     # RECORDING
     #
 
-    def custom_request(self, request_name: str, payload: dict):
+    def custom_request(self, request_name: str, payload=None):
+        if payload is None:
+            payload = {}
         payload = copy.deepcopy(payload)
         return self.obs_controller.send_custom_request(request_name, payload)
 
@@ -69,7 +78,23 @@ class Backend(BackendBase):
     def create_record_chapter(self, chapter_name):
         self.obs_controller.send_request("create_record_chapter", chapter_name)
 
-    def t(self):
-        return self.obs_controller.send_request("get_stream_service_settings")
+    #
+    # STREAMING
+    #
+
+    def get_stream_status(self):
+        return self.obs_controller.send_request("get_stream_status")
+
+    def start_stream(self):
+        self.obs_controller.send_request("start_stream")
+
+    def stop_stream(self):
+        self.obs_controller.send_request("stop_stream")
+
+    def toggle_stream(self):
+        return self.obs_controller.send_request("toggle_stream")
+
+    def send_stream_caption(self, caption_text: str):
+        self.obs_controller.send_request("send_stream_caption", caption_text)
 
 backend = Backend()

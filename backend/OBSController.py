@@ -98,6 +98,9 @@ class OBSController:
         return None
 
     def send_custom_request(self, request_name, payload):
+        if not self.connected:
+            return
+
         try:
             return self.request_client.send(request_name, payload)
         except OBSSDKRequestError as e:
