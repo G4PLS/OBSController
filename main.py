@@ -11,9 +11,7 @@ from src.backend.PluginManager.PluginBase import PluginBase
 
 from .actions.RecordActions.RecordAction import RecordAction
 from .actions.StreamActions.StreamAction import StreamAction
-from .actions.RecordActions.RecordChapterAction import RecordChapterAction
 from .actions.OBSActions.ReconnectAction import ReconnectAction
-from .actions.RecordActions.SplitFileAction import SplitFileAction
 
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
 
@@ -54,32 +52,6 @@ class OBSController(PluginBase):
             }
         )
         self.add_action_holder(self.record_action_holder)
-
-        self.record_chapter_holder = ActionHolder(
-            plugin_base=self,
-            action_base=RecordChapterAction,
-            action_id_suffix="RecordChapter",
-            action_name="Record Chapter",
-            action_support= {
-                Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.UNSUPPORTED,
-                Input.Touchscreen: ActionInputSupport.UNSUPPORTED
-            }
-        )
-        self.add_action_holder(self.record_chapter_holder)
-
-        self.split_file_holder = ActionHolder(
-            plugin_base=self,
-            action_base=SplitFileAction,
-            action_id_suffix="SplitFile",
-            action_name="Split Record File",
-            action_support={
-                Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.UNSUPPORTED,
-                Input.Touchscreen: ActionInputSupport.UNSUPPORTED
-            }
-        )
-        self.add_action_holder(self.split_file_holder)
 
         self.reconnect_action_holder = ActionHolder(
             plugin_base=self,

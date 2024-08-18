@@ -7,6 +7,9 @@ from .Pause.TogglePause import TogglePause
 from .Record.StartRecording import StartRecording
 from .Record.StopRecording import StopRecording
 from .Record.ToggleRecord import ToggleRecord
+from .Record.SplitFileAction import SplitFileAction
+from .Record.RecordChapterAction import RecordChapterAction
+
 from ..MultiAction import MultiAction
 
 gi.require_version("Gtk", "4.0")
@@ -26,7 +29,9 @@ class RecordAction(MultiAction):
             "pause_record": ("Pause Recording", PauseRecord),
             "resume_record": ("Resume Recording", ResumeRecord),
             "toggle_record": ("Toggle Recording", ToggleRecord),
-            "toggle_pause": ("Toggle Pause", TogglePause)
+            "toggle_pause": ("Toggle Pause", TogglePause),
+            "split_record": ("Split Record File", SplitFileAction),
+            "record_chapter": ("Create Record Chapter", RecordChapterAction)
         }
 
         self.action_lookup: str = "start_record"

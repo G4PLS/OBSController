@@ -34,6 +34,12 @@ class Backend(BackendBase):
 
         return self.get_connected()
 
+    def custom_request(self, request_name: str, payload=None):
+        if payload is None:
+            payload = {}
+        payload = copy.deepcopy(payload)
+        return self.obs_controller.send_custom_request(request_name, payload)
+
     #
     # CONFIG
     #
@@ -44,12 +50,6 @@ class Backend(BackendBase):
     #
     # RECORDING
     #
-
-    def custom_request(self, request_name: str, payload=None):
-        if payload is None:
-            payload = {}
-        payload = copy.deepcopy(payload)
-        return self.obs_controller.send_custom_request(request_name, payload)
 
     def get_record_status(self):
         return self.obs_controller.send_request("get_record_status")
