@@ -14,7 +14,7 @@ class RecordActionBase(RecordActionHandler):
         super().__init__(*args, **kwargs)
 
         self.show_timecode: bool = False
-        self.show_pause_state = False
+        self.show_pause_state: bool = False
         self.recording_offset: int = 0
 
     def build_ui(self) -> None:
@@ -90,6 +90,7 @@ class RecordActionBase(RecordActionHandler):
         settings = self.action_base.get_settings()
 
         self.show_timecode = settings.get("show-timecode", False)
+        self.show_pause_state = settings.get("show-pause-state", False)
         self.recording_offset = settings.get("recording-offset", 0)
 
     def load_ui_settings(self):
