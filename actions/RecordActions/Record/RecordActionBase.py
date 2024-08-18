@@ -99,6 +99,7 @@ class RecordActionBase(RecordActionHandler):
         self.disconnect_events()
 
         self.show_timecode_switch.set_active(self.show_timecode)
+        self.show_pause_state_switch.set_active(self.show_pause_state)
         self.recording_offset_spin.set_value(self.recording_offset)
 
         self.connect_events()
