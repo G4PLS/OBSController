@@ -18,8 +18,6 @@ class ActionHandler(Adw.PreferencesGroup):
         self.plugin_base: PluginBase = plugin_base
         self.action_base: ActionBase = action_base
 
-        self.build_ui()
-
     def on_ready(self) -> None:
         pass
 
@@ -39,6 +37,12 @@ class ActionHandler(Adw.PreferencesGroup):
         pass
 
     def load_ui_settings(self):
+        pass
+
+    def connect_events(self):
+        pass
+
+    def disconnect_events(self):
         pass
 
     def show_error(self):
