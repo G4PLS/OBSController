@@ -25,6 +25,8 @@ class RecordActionHandler(ActionHandler):
 
         self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed", self.record_state_changed)
 
+        self.build_ui()
+
     def on_ready(self) -> None:
         self.load_settings()
 

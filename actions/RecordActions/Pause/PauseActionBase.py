@@ -16,11 +16,12 @@ class PauseActionBase(RecordActionHandler):
         self.update_with_obs: bool = False
 
     def build_ui(self) -> None:
-        super().build_ui()
+        self.show_status_switch = Adw.SwitchRow(title="Show Pause Status")
 
         self.update_with_obs_switch = Adw.SwitchRow(title="Update Pause State with OBS",
                                                     tooltip_text="When this is active the button will change the Icon based on the current paused state in obs")
 
+        self.add(self.show_status_switch)
         self.add(self.update_with_obs_switch)
 
         self.connect_events()

@@ -15,9 +15,11 @@ rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
 
 class RecordChapterAction(ActionHandler):
     def __init__(self, *args, **kwargs):
+        super().__init__(title="Record Chapter", *args, **kwargs)
+
         self.chapter_name = None
 
-        super().__init__(title="Record Chapter", *args, **kwargs)
+        self.build_ui()
 
     def on_ready(self):
         self.load_settings()
@@ -80,9 +82,9 @@ class RecordChapterAction(ActionHandler):
     def load_settings(self):
         settings = self.action_base.get_settings()
 
-        self.on_update()
-
         self.chapter_name = settings.get("chapter-name", None)
+
+        self.on_update()
 
     def set_chapter_label(self):
         if self.chapter_name is not None:
@@ -94,7 +96,7 @@ class RecordChapterAction(ActionHandler):
     # ACTION
     #
 
-    def on_key_down(self):
+    def on_click(self):
         if not self.chapter_name:
             return
 

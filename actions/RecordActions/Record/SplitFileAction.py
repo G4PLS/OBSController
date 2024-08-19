@@ -13,6 +13,8 @@ class SplitFileAction(ActionHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.build_ui()
+
     def on_update(self):
         self.action_base.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "Record", "chapter.svg"), size=1)
         self.action_base.set_background_color([101, 124, 194, 255])
