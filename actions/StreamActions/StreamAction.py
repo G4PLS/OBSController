@@ -8,6 +8,7 @@ gi.require_version("Adw", "1")
 from .Subactions.StartStream import StartStream
 from .Subactions.StopStream import StopStream
 from .Subactions.ToggleStream import ToggleStream
+from .Subactions.SendStreamCaption import SendStreamCaption
 
 class StreamAction(MultiAction):
     def __init__(self, *args, **kwargs):
@@ -17,7 +18,7 @@ class StreamAction(MultiAction):
             "start_stream": ("Start Streaming", StartStream),
             "stop_stream": ("Stop Streaming", StopStream),
             "toggle_stream": ("Toggle Stream", ToggleStream),
-            "send_caption": ("Send Stream Caption", None),
+            "send_caption": ("Send Stream Caption", SendStreamCaption),
         }
 
         self.action_lookup: str = "start_stream"

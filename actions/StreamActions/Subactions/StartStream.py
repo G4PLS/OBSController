@@ -5,4 +5,4 @@ class StartStream(StreamActionBase):
         super().__init__(title="Start Stream", *args, **kwargs)
 
     def on_click(self) -> None:
-        pass
+        self.plugin_base.backend.start_stream()

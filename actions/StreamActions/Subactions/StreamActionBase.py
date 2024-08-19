@@ -13,6 +13,8 @@ class StreamActionBase(StreamActionHandler):
         self.show_special_icons: bool = True
         self.streaming_offset: int = 0
 
+        self.build_ui()
+
     def build_ui(self) -> None:
         super().build_ui()
 
