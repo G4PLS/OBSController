@@ -84,10 +84,10 @@ class PauseActionBase(RecordActionHandler):
         paused = record_status.get("output_paused", False)
 
         if paused or not self.update_with_obs:
-            self.action_base.set_background_color([101, 124, 194, 255])
+            self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
             new_image = "paused.svg"
         else:
-            self.action_base.set_background_color([48, 59, 92, 255])
-            new_image = "not_paused.svg"
+            self.action_base.set_background_color(self.plugin_base.SECONDARY_BACKGROUND)
+            new_image = "unpaused.svg"
 
         self.update_status_image(new_image)

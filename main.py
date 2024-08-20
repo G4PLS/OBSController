@@ -15,20 +15,16 @@ from .actions.OBSActions.ReconnectAction import ReconnectAction
 
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
 
-""" COLORS
-
-Background:
-Primary: [101, 124, 194, 255]
-Secondary: [48, 59, 92, 255]
-
-Element Color:
-Primary: [194, 206, 255, 255]
-Secondary: [82, 101, 158, 255]
-
+""" Element Colors
+Primary: [186, 233, 255, 255]
+Secondary: [92, 115, 179, 255]
 """
 
 
 class OBSController(PluginBase):
+    PRIMARY_BACKGROUND = [127, 159, 243, 255]
+    SECONDARY_BACKGROUND = [48, 59, 92, 255]
+
     def __init__(self):
         super().__init__()
         self.init_vars()

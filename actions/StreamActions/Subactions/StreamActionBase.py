@@ -128,13 +128,13 @@ class StreamActionBase(StreamActionHandler):
             if stream_status.get("output_reconnecting", False):
                 new_image = "reconnecting.svg"
             else:
-                new_image = "streaming.svg"
-            self.action_base.set_background_color([101, 124, 194, 255])
+                new_image = "stream_on.svg"
+            self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
         else:
-            new_image = "not_streaming.svg"
-            self.action_base.set_background_color([48, 59, 92, 255])
+            new_image = "stream_off.svg"
+            self.action_base.set_background_color(self.plugin_base.SECONDARY_BACKGROUND)
 
-        self.update_status_image(new_image, subdir)
+        self.update_status_image(new_image, "Stream")
 
     def set_timecode(self, stream_status):
         if self.show_timecode:

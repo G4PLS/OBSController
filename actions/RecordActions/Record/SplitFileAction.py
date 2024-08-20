@@ -16,11 +16,12 @@ class SplitFileAction(ActionHandler):
         self.build_ui()
 
     def on_update(self):
-        self.action_base.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "Record", "chapter.svg"), size=1)
-        self.action_base.set_background_color([101, 124, 194, 255])
+        self.action_base.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "Record", "cut_record_file.svg"), size=1)
+        self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
 
     def on_tick(self):
-        self.action_base.set_background_color([101, 124, 194, 255])
+        self.action_base.set_media(self.action_base.get_asset_path("cut_record_file.svg", subdir="Record"))
+        self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
 
     def build_ui(self) -> None:
         self.add(Gtk.Label(label="Only in Websocket version >=5.5.0"))

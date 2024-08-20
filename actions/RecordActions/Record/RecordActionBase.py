@@ -113,11 +113,11 @@ class RecordActionBase(RecordActionHandler):
         if record_status.get("output_active", False):
             new_image = "recording_paused.svg" \
                 if (record_status.get("output_paused", False) and self.show_pause_state) \
-                else "recording.svg"
-            self.action_base.set_background_color([101, 124, 194, 255])
+                else "recording_on.svg"
+            self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
         else:
-            new_image = "not_recording.svg"
-            self.action_base.set_background_color([48, 59, 92, 255])
+            new_image = "recording_off.svg"
+            self.action_base.set_background_color(self.plugin_base.SECONDARY_BACKGROUND)
 
         self.update_status_image(new_image)
 

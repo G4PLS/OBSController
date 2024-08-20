@@ -36,11 +36,11 @@ class RecordChapterAction(ActionHandler):
 
     def on_update(self):
         self.action_base.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "Record", "chapter.svg"), size=1)
-        self.action_base.set_background_color([101, 124, 194, 255])
+        self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
         self.set_chapter_label()
 
     def on_tick(self):
-        self.action_base.set_background_color([101, 124, 194, 255])
+        self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
 
     #
     # EVENTS

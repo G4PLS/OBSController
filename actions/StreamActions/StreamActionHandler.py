@@ -68,7 +68,6 @@ class StreamActionHandler(ActionHandler):
         self.update_button()
 
     def update_button(self):
-        print("STREAM ACTION HANDLER")
         status = self.plugin_base.backend.get_stream_status()
 
         if status is None:

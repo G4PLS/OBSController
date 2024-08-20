@@ -2,6 +2,7 @@ import os.path
 
 import gi
 
+from src.backend.DeckManagement.Subclasses.ImageLayer import ImageLayer
 from ..ActionHandler import ActionHandler
 
 gi.require_version("Gtk", "4.0")
@@ -22,6 +23,11 @@ class RecordActionHandler(ActionHandler):
 
         self.current_image: str = ""
         self.display_error: bool = False
+
+        self.connection_lost_layer: list[ImageLayer] = [
+            ImageLayer.from_media_path(self.get_media_path(asset_name="obs.svg", subdir="OBS")),
+            ImageLayer.from_media_path(self.get_media_path(asset_name="connection_lost.svg", subdir="OBS"))
+        ]
 
         self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed", self.record_state_changed)
 
@@ -106,5 +112,5 @@ class RecordActionHandler(ActionHandler):
             return os.path.join(self.plugin_base.PATH, "assets", asset_name)
 
     def show_error(self):
-        self.action_base.set_media(media_path=self.get_media_path("connection_lost.svg", "OBS"), size=0.75)
+        self.action_base.set_layered_images(self.connection_lost_layer)
         self.action_base.set_background_color([82, 101, 158, 255])
