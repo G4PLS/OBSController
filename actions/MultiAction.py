@@ -47,6 +47,9 @@ class MultiAction(OBSAction):
         self.action_row.combo_box.add_attribute(self.action_renderer, "text", 0)
 
         # LOAD CUSTOM UI
+        #self.selected_action: Gtk.Widget
+
+        self.selected_action.unparent()
         self.ui.add(self.selected_action)
 
         # SETUP UI SETTINGS
@@ -95,16 +98,20 @@ class MultiAction(OBSAction):
         settings = self.get_settings()
 
         self.ui.remove(self.selected_action)
-        del self.selected_action
 
         self.action_lookup = self.action_model[self.action_row.combo_box.get_active()][1]
-        self.selected_action = self.action_translation.get(self.action_lookup)[1](self.plugin_base, self)
 
-        self.ui.add(self.selected_action)
+        self.selected_action = self.action_translation.get(self.action_lookup, None)
 
-        self.selected_action.on_ready()
-        self.selected_action.load_settings()
-        self.selected_action.load_ui_settings()
+        if self.selected_action and len(self.selected_action) >= 1:
+
+            self.selected_action = self.selected_action[1](self.plugin_base, self)
+
+            self.ui.add(self.selected_action)
+
+            self.selected_action.on_ready()
+            self.selected_action.load_settings()
+            self.selected_action.load_ui_settings()
 
         settings["action-lookup"] = self.action_lookup
         self.set_settings(settings)

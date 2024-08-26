@@ -20,6 +20,8 @@ class OBSAction(ActionBase):
 
     def get_custom_config_area(self):
         self.ui = Adw.PreferencesGroup()
+
+        self.plugin_config.unparent()
         self.ui.add(self.plugin_config)
 
         return self.ui
