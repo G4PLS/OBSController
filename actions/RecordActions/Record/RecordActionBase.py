@@ -1,5 +1,8 @@
+import os
+
 import gi
 
+from src.backend.DeckManagement.Subclasses.ImageLayer import ImageLayer
 from ..RecordActionHandler import RecordActionHandler
 
 gi.require_version("Gtk", "4.0")
@@ -16,6 +19,19 @@ class RecordActionBase(RecordActionHandler):
         self.show_timecode: bool = False
         self.show_pause_state: bool = False
         self.recording_offset: int = 0
+
+        self.RECORD_ON = ImageLayer.to_layered_image([
+            ImageLayer.from_media_path(self.get_media_path("recording_dot_on.svg", subdir="Record/Dot")),
+            ImageLayer.from_media_path(self.get_media_path("recording_rings_on.svg", subdir="Record/Rings"))
+        ])
+        self.RECORD_OFF = ImageLayer.to_layered_image([
+            ImageLayer.from_media_path(self.get_media_path("recording_dot_off.svg", subdir="Record/Dot")),
+            ImageLayer.from_media_path(self.get_media_path("recording_rings_off.svg", subdir="Record/Rings"))
+        ])
+        self.RECORD_PAUSED = ImageLayer.to_layered_image([
+            ImageLayer(image=self.RECORD_ON),
+            ImageLayer.from_media_path(self.get_media_path("little_pause_on.svg", subdir="Record/Pause"))
+        ])
 
     def build_ui(self) -> None:
         super().build_ui()
@@ -111,12 +127,13 @@ class RecordActionBase(RecordActionHandler):
             return
 
         if record_status.get("output_active", False):
-            new_image = "recording_paused.svg" \
-                if (record_status.get("output_paused", False) and self.show_pause_state) \
-                else "recording_on.svg"
+            if record_status.get("output_paused", False) and self.show_pause_state:
+                new_image = self.RECORD_PAUSED
+            else:
+                new_image = self.RECORD_ON
             self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
         else:
-            new_image = "recording_off.svg"
+            new_image = self.RECORD_OFF
             self.action_base.set_background_color(self.plugin_base.SECONDARY_BACKGROUND)
 
         self.update_status_image(new_image)

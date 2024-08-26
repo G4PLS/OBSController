@@ -7,8 +7,8 @@ from .Pause.TogglePause import TogglePause
 from .Record.StartRecording import StartRecording
 from .Record.StopRecording import StopRecording
 from .Record.ToggleRecord import ToggleRecord
-from .Record.SplitFileAction import SplitFileAction
-from .Record.RecordChapterAction import RecordChapterAction
+from .Record.SplitFile import SplitFile
+from .Record.RecordChapter import RecordChapter
 
 from ..MultiAction import MultiAction
 
@@ -30,8 +30,8 @@ class RecordAction(MultiAction):
             "resume_record": ("Resume Recording", ResumeRecord),
             "toggle_record": ("Toggle Recording", ToggleRecord),
             "toggle_pause": ("Toggle Pause", TogglePause),
-            "split_record": ("Split Record File", SplitFileAction),
-            "record_chapter": ("Create Record Chapter", RecordChapterAction)
+            "split_record": ("Split Record File", SplitFile),
+            "record_chapter": ("Create Record Chapter", RecordChapter)
         }
 
         self.action_lookup: str = "start_record"

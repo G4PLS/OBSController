@@ -97,11 +97,11 @@ class RecordActionHandler(ActionHandler):
         if new_image != self.current_image:
             self.current_image = new_image
             self.action_base.set_media(
-                media_path=self.get_media_path(self.current_image, subdir=self.ASSET_SUBDIR),
+                image=self.current_image,
                 size=1,
                 update=True)
         self.action_base.set_media(
-            media_path=self.get_media_path(self.current_image, subdir=self.ASSET_SUBDIR),
+            image=self.current_image,
             size=1,
             update=False)
 

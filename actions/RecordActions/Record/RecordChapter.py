@@ -3,6 +3,7 @@ import threading
 
 import gi
 
+from src.backend.DeckManagement.Subclasses.ImageLayer import ImageLayer
 from ...ActionHandler import ActionHandler
 
 gi.require_version("Gtk", "4.0")
@@ -13,11 +14,18 @@ import rpyc
 
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
 
-class RecordChapterAction(ActionHandler):
+class RecordChapter(ActionHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(title="Record Chapter", *args, **kwargs)
 
         self.chapter_name = None
+
+        self.CHAPTER = ImageLayer.from_media_path(media_path=self.action_base.get_asset_path("chapter.svg", "Record"))
+
+        self.ERROR = ImageLayer.to_layered_image([
+            self.CHAPTER,
+            ImageLayer.from_media_path(media_path=self.action_base.get_asset_path("error.svg", "OBS"), size=0.75)
+        ])
 
         self.build_ui()
 
@@ -35,12 +43,14 @@ class RecordChapterAction(ActionHandler):
         self.connect_events()
 
     def on_update(self):
-        self.action_base.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "Record", "chapter.svg"), size=1)
+        self.action_base.set_media(image=self.CHAPTER.image)
         self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
         self.set_chapter_label()
 
     def on_tick(self):
+        self.action_base.set_media(image=self.CHAPTER.image)
         self.action_base.set_background_color(self.plugin_base.PRIMARY_BACKGROUND)
+        self.set_chapter_label()
 
     #
     # EVENTS
@@ -103,6 +113,6 @@ class RecordChapterAction(ActionHandler):
         status_code = self.plugin_base.backend.custom_request("CreateRecordChapter", {"chapterName": self.chapter_name})
 
         if status_code == "501" or status_code == "702":
-            self.action_base.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "error.svg"), size=0.8)
+            self.action_base.set_media(image=self.ERROR)
             self.action_base.set_top_label("")
             threading.Timer(0.5, self.on_update).start()

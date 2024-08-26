@@ -122,8 +122,6 @@ class StreamActionBase(StreamActionHandler):
                     "Twitch": "Twitch"
                 }
 
-                subdir = f"{self.ASSET_SUBDIR}/{lookup.get(service)}"
-
         if stream_status.get("output_active", False):
             if stream_status.get("output_reconnecting", False):
                 new_image = "reconnecting.svg"

@@ -22,7 +22,7 @@ Secondary: [92, 115, 179, 255]
 
 
 class OBSController(PluginBase):
-    PRIMARY_BACKGROUND = [127, 159, 243, 255]
+    PRIMARY_BACKGROUND = [87, 109, 167, 255]
     SECONDARY_BACKGROUND = [48, 59, 92, 255]
 
     def __init__(self):
