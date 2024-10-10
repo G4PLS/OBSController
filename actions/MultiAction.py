@@ -23,16 +23,19 @@ class MultiAction(OBSAction):
 
         self.action_lookup: str = ""
         self.selected_action: Tuple[str, Type[ActionHandler]] = None
+        self.executing_action: ActionHandler = None
 
     def on_ready(self):
+        super().on_ready()
+
         self.load_settings()
 
-        if self.selected_action:
-            self.selected_action.on_ready()
+        if self.executing_action:
+            self.executing_action.on_ready()
 
     def on_update(self):
-        if self.selected_action:
-            self.selected_action.on_update()
+        if self.executing_action:
+            self.executing_action.on_update()
 
     def get_custom_config_area(self):
         self.ui = super().get_custom_config_area()
@@ -49,8 +52,9 @@ class MultiAction(OBSAction):
         # LOAD CUSTOM UI
         #self.selected_action: Gtk.Widget
 
-        self.selected_action.unparent()
-        self.ui.add(self.selected_action)
+        if self.executing_action:
+            self.executing_action.unparent()
+            self.ui.add(self.executing_action)
 
         # SETUP UI SETTINGS
         self.load_action_model()
@@ -81,7 +85,8 @@ class MultiAction(OBSAction):
         else:
             self.action_row.combo_box.set_active(-1)
 
-        self.selected_action.load_ui_settings()
+        if self.executing_action:
+            self.executing_action.load_ui_settings()
 
     def load_settings(self):
         settings = self.get_settings()
@@ -91,35 +96,34 @@ class MultiAction(OBSAction):
         self.selected_action = self.action_translation.get(self.action_lookup, None)
 
         if self.selected_action:
-            self.selected_action = self.selected_action[1](self.plugin_base, self)
-            self.selected_action.load_settings()
+            self.executing_action = self.selected_action[1](self.plugin_base, self)
+            self.executing_action.load_settings()
 
     def on_action_changed(self, *args):
         settings = self.get_settings()
 
-        self.ui.remove(self.selected_action)
+        self.ui.remove(self.executing_action)
 
         self.action_lookup = self.action_model[self.action_row.combo_box.get_active()][1]
 
         self.selected_action = self.action_translation.get(self.action_lookup, None)
 
         if self.selected_action and len(self.selected_action) >= 1:
+            self.executing_action = self.selected_action[1](self.plugin_base, self)
 
-            self.selected_action = self.selected_action[1](self.plugin_base, self)
+            self.ui.add(self.executing_action)
 
-            self.ui.add(self.selected_action)
-
-            self.selected_action.on_ready()
-            self.selected_action.load_settings()
-            self.selected_action.load_ui_settings()
+            self.executing_action.on_ready()
+            self.executing_action.load_settings()
+            self.executing_action.load_ui_settings()
 
         settings["action-lookup"] = self.action_lookup
         self.set_settings(settings)
 
     def on_key_down(self):
-        if self.selected_action:
-            self.selected_action.on_click()
+        if self.executing_action:
+            self.executing_action.on_click()
 
     def on_tick(self):
-        if self.selected_action:
-            self.selected_action.on_tick()
+        if self.executing_action:
+            self.executing_action.on_tick()
