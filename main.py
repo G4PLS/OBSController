@@ -29,13 +29,12 @@ class OBSController(PluginBase):
         super().__init__()
         self.init_vars()
 
-        self.launch_backend(os.path.join(self.PATH, "backend", "backend.py"), os.path.join(self.PATH, "backend", ".venv"), open_in_terminal=False)
+        self.launch_backend(os.path.join(self.PATH, "backend", "backend.py"), os.path.join(self.PATH, "backend", ".venv"))
         self.wait_for_backend(10)
 
         #
         # ACTION HOLDERS
         #
-
         self.record_action_holder = ActionHolder(
             plugin_base=self,
             action_base=RecordAction,
