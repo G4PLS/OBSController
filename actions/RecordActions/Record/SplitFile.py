@@ -1,14 +1,14 @@
-import os.path
 import threading
 
 import gi
 
-from src.backend.DeckManagement.Subclasses.ImageLayer import ImageLayer
+from src.backend.DeckManagement.Media.ImageLayer import ImageLayer
+from src.backend.DeckManagement.Media.Media import Media
 from ...ActionHandler import ActionHandler
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Adw, Gtk
+from gi.repository import Gtk
 
 class SplitFile(ActionHandler):
     def __init__(self, *args, **kwargs):
@@ -16,10 +16,10 @@ class SplitFile(ActionHandler):
 
         self.CUT_FILE = ImageLayer.from_media_path(media_path=self.action_base.get_asset_path("cut_record_file.svg", "Record"))
 
-        self.ERROR = ImageLayer.to_layered_image([
+        self.ERROR = Media(layers=[
             self.CUT_FILE,
             ImageLayer.from_media_path(media_path=self.action_base.get_asset_path("error.svg", "OBS"), size=0.75)
-            ])
+            ]).get_final_media()
 
         self.build_ui()
 

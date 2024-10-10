@@ -1,6 +1,7 @@
 import gi
 
-from src.backend.DeckManagement.Subclasses.ImageLayer import ImageLayer
+from src.backend.DeckManagement.Media.ImageLayer import ImageLayer
+from src.backend.DeckManagement.Media.Media import Media
 from ..RecordActionHandler import RecordActionHandler
 
 gi.require_version("Gtk", "4.0")
@@ -16,15 +17,15 @@ class PauseActionBase(RecordActionHandler):
 
         self.update_with_obs: bool = False
 
-        self.PAUSED = ImageLayer.to_layered_image([
+        self.PAUSED = Media(layers=[
             ImageLayer.from_media_path(self.get_media_path("recording_rings_on.svg", "Record/Rings")),
             ImageLayer.from_media_path(self.get_media_path("little_pause_on.svg", "Record/Pause"))
-        ])
+        ]).get_final_media()
 
-        self.UNPAUSED = ImageLayer.to_layered_image([
+        self.UNPAUSED = Media(layers=[
             ImageLayer.from_media_path(self.get_media_path("recording_rings_off.svg", "Record/Rings")),
             ImageLayer.from_media_path(self.get_media_path("little_pause_off.svg", "Record/Pause"))
-        ])
+        ]).get_final_media()
 
     def build_ui(self) -> None:
         self.show_status_switch = Adw.SwitchRow(title="Show Pause Status")

@@ -2,7 +2,8 @@ import os.path
 
 import gi
 
-from src.backend.DeckManagement.Subclasses.ImageLayer import ImageLayer
+from src.backend.DeckManagement.Media.ImageLayer import ImageLayer
+from src.backend.DeckManagement.Media.Media import Media
 from ..ActionHandler import ActionHandler
 
 gi.require_version("Gtk", "4.0")
@@ -19,15 +20,15 @@ class RecordActionHandler(ActionHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.show_status: bool = False
+        self.show_status: bool = True
 
         self.current_image: str = ""
         self.display_error: bool = False
 
-        self.connection_lost_layer: list[ImageLayer] = [
+        self.connection_lost_layer = Media(layers=[
             ImageLayer.from_media_path(self.get_media_path(asset_name="obs.svg", subdir="OBS")),
             ImageLayer.from_media_path(self.get_media_path(asset_name="connection_lost.svg", subdir="OBS"))
-        ]
+        ]).get_final_media()
 
         self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed", self.record_state_changed)
 
@@ -66,7 +67,7 @@ class RecordActionHandler(ActionHandler):
     def load_settings(self):
         settings = self.action_base.get_settings()
 
-        self.show_status = settings.get("show-status", False)
+        self.show_status = settings.get("show-status", True)
 
     def load_ui_settings(self):
         self.disconnect_events()
@@ -112,5 +113,5 @@ class RecordActionHandler(ActionHandler):
             return os.path.join(self.plugin_base.PATH, "assets", asset_name)
 
     def show_error(self):
-        self.action_base.set_layered_images(self.connection_lost_layer)
+        self.action_base.set_media(self.connection_lost_layer)
         self.action_base.set_background_color([82, 101, 158, 255])

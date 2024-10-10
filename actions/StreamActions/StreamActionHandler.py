@@ -2,6 +2,7 @@ import os
 
 import gi
 
+from src.backend.DeckManagement.Media.Media import Media
 from ..ActionHandler import ActionHandler
 
 gi.require_version("Gtk", "4.0")
@@ -18,6 +19,10 @@ class StreamActionHandler(ActionHandler):
         self.show_status: bool = False
 
         self.current_image: str = ""
+
+        self.STREAM_ON = Media.from_media_path(self.action_base.get_asset_path("stream_on.svg", self.ASSET_SUBDIR))
+        self.STREAM_OFF = Media.from_media_path(self.action_base.get_asset_path("stream_off.svg", self.ASSET_SUBDIR))
+        self.RECONNECTING = Media.from_media_path(self.action_base.get_asset_path("reconnecting.svg", self.ASSET_SUBDIR))
 
         self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed",
                                                   self.stream_state_changed)

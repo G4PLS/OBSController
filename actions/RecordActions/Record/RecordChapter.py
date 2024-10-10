@@ -1,9 +1,9 @@
-import os.path
 import threading
 
 import gi
 
-from src.backend.DeckManagement.Subclasses.ImageLayer import ImageLayer
+from src.backend.DeckManagement.Media.ImageLayer import ImageLayer
+from src.backend.DeckManagement.Media.Media import Media
 from ...ActionHandler import ActionHandler
 
 gi.require_version("Gtk", "4.0")
@@ -22,10 +22,10 @@ class RecordChapter(ActionHandler):
 
         self.CHAPTER = ImageLayer.from_media_path(media_path=self.action_base.get_asset_path("chapter.svg", "Record"))
 
-        self.ERROR = ImageLayer.to_layered_image([
+        self.ERROR = Media(layers=[
             self.CHAPTER,
             ImageLayer.from_media_path(media_path=self.action_base.get_asset_path("error.svg", "OBS"), size=0.75)
-        ])
+        ]).get_final_media()
 
         self.build_ui()
 

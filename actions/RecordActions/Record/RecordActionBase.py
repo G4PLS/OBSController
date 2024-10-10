@@ -1,8 +1,7 @@
-import os
-
 import gi
 
-from src.backend.DeckManagement.Subclasses.ImageLayer import ImageLayer
+from src.backend.DeckManagement.Media.Media import Media
+from src.backend.DeckManagement.Media.ImageLayer import ImageLayer
 from ..RecordActionHandler import RecordActionHandler
 
 gi.require_version("Gtk", "4.0")
@@ -17,21 +16,21 @@ class RecordActionBase(RecordActionHandler):
         super().__init__(*args, **kwargs)
 
         self.show_timecode: bool = False
-        self.show_pause_state: bool = False
+        self.show_pause_state: bool = True
         self.recording_offset: int = 0
 
-        self.RECORD_ON = ImageLayer.to_layered_image([
+        self.RECORD_ON = Media(layers=[
             ImageLayer.from_media_path(self.get_media_path("recording_dot_on.svg", subdir="Record/Dot")),
             ImageLayer.from_media_path(self.get_media_path("recording_rings_on.svg", subdir="Record/Rings"))
-        ])
-        self.RECORD_OFF = ImageLayer.to_layered_image([
+        ]).get_final_media()
+        self.RECORD_OFF = Media(layers=[
             ImageLayer.from_media_path(self.get_media_path("recording_dot_off.svg", subdir="Record/Dot")),
             ImageLayer.from_media_path(self.get_media_path("recording_rings_off.svg", subdir="Record/Rings"))
-        ])
-        self.RECORD_PAUSED = ImageLayer.to_layered_image([
+        ]).get_final_media()
+        self.RECORD_PAUSED = Media(layers=[
             ImageLayer(image=self.RECORD_ON),
             ImageLayer.from_media_path(self.get_media_path("little_pause_on.svg", subdir="Record/Pause"))
-        ])
+        ]).get_final_media()
 
     def build_ui(self) -> None:
         super().build_ui()
