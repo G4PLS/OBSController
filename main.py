@@ -8,9 +8,10 @@ from src.backend.DeckManagement.InputIdentifier import Input
 from src.backend.PluginManager.ActionHolder import ActionHolder
 from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
 from src.backend.PluginManager.PluginBase import PluginBase
+from .actions.PluginAssetManager import PluginAssetManager
 
-from .actions.RecordActions.RecordAction import RecordAction
-from .actions.StreamActions.StreamAction import StreamAction
+from .actions.Recording.RecordingAction import RecordingAction
+from .actions.VirtualCamera.VirtualCameraAction import VirtualCameraAction
 from .actions.OBSActions.ReconnectAction import ReconnectAction
 
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
@@ -20,11 +21,7 @@ Primary: [186, 233, 255, 255]
 Secondary: [92, 115, 179, 255]
 """
 
-
 class OBSController(PluginBase):
-    PRIMARY_BACKGROUND = [87, 109, 167, 255]
-    SECONDARY_BACKGROUND = [48, 59, 92, 255]
-
     def __init__(self):
         super().__init__()
         self.init_vars()
@@ -32,47 +29,44 @@ class OBSController(PluginBase):
         self.launch_backend(os.path.join(self.PATH, "backend", "backend.py"), os.path.join(self.PATH, "backend", ".venv"))
         self.wait_for_backend(10)
 
-        #
-        # ACTION HOLDERS
-        #
-        self.record_action_holder = ActionHolder(
+        self.record_holder = ActionHolder(
             plugin_base=self,
-            action_base=RecordAction,
-            action_id_suffix="Record",
+            action_base=RecordingAction,
+            action_id_suffix="Recording",
             action_name="Recording",
             action_support= {
                 Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.UNSUPPORTED,
-                Input.Touchscreen: ActionInputSupport.UNSUPPORTED
+                Input.Dial: ActionInputSupport.SUPPORTED,
+                Input.Touchscreen: ActionInputSupport.SUPPORTED
             }
         )
-        self.add_action_holder(self.record_action_holder)
+        self.add_action_holder(self.record_holder)
 
-        self.reconnect_action_holder = ActionHolder(
+        self.reconnect_holder = ActionHolder(
             plugin_base=self,
             action_base=ReconnectAction,
             action_id_suffix="Reconnect",
             action_name="Reconnect",
             action_support= {
                 Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.UNSUPPORTED,
-                Input.Touchscreen: ActionInputSupport.UNSUPPORTED
+                Input.Dial: ActionInputSupport.SUPPORTED,
+                Input.Touchscreen: ActionInputSupport.SUPPORTED
             }
         )
-        self.add_action_holder(self.reconnect_action_holder)
-        
-        self.stream_action_holder = ActionHolder(
+        self.add_action_holder(self.reconnect_holder)
+
+        self.virtual_cam_action = ActionHolder(
             plugin_base=self,
-            action_base=StreamAction,
-            action_id_suffix="Stream",
-            action_name="Streaming",
+            action_base=VirtualCameraAction,
+            action_id_suffix="VirtualCam",
+            action_name="Virtual Camera",
             action_support= {
                 Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.UNSUPPORTED,
-                Input.Touchscreen: ActionInputSupport.UNSUPPORTED
+                Input.Dial: ActionInputSupport.SUPPORTED,
+                Input.Touchscreen: ActionInputSupport.SUPPORTED
             }
         )
-        self.add_action_holder(self.stream_action_holder)
+        self.add_action_holder(self.virtual_cam_action)
 
         #
         # EVENT HOLDER
@@ -91,6 +85,7 @@ class OBSController(PluginBase):
 
     def init_vars(self):
         self.lm = self.locale_manager
+        self.asset_manager = PluginAssetManager(self)
 
     def trigger(self, event_name, message):
         """
