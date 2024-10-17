@@ -79,6 +79,22 @@ class Backend(BackendBase):
         self.obs_controller.send_request("create_record_chapter", chapter_name)
 
     #
+    # VIRTUAL CAMERA
+    #
+
+    def start_virtual_cam(self):
+        self.obs_controller.send_request("start_virtual_cam")
+
+    def stop_virtual_cam(self):
+        self.obs_controller.send_request("stop_virtual_cam")
+
+    def toggle_virtual_cam(self):
+        return self.obs_controller.send_request("toggle_virtual_cam")
+
+    def get_virtual_cam_status(self):
+        return self.obs_controller.send_request("get_virtual_cam_status")
+
+    #
     # STREAMING
     #
 
