@@ -12,7 +12,7 @@ from gi.repository import Adw, Gtk
 
 import rpyc
 
-rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
+
 
 class RecordChapter(ActionHandler):
     def __init__(self, *args, **kwargs):
