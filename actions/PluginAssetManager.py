@@ -15,6 +15,10 @@ class PluginAssetManager:
         ])
         self.ERROR_MEDIA = self.ERROR_ICON.get_final_media()
 
+        self.SUCCESS_ICON = Media.from_path(path=self.get_asset_path(asset_name="success.svg", subdirs=["OBS"]),
+                                            size=0.75)
+        self.SUCCESS_MEDIA = self.SUCCESS_ICON.get_final_media()
+
         self.CONNECTED_ICON = Media(layers=[
             ImageLayer.from_image_path(self.get_asset_path("obs.svg", ["OBS"])),
             ImageLayer.from_image_path(self.get_asset_path("connection_established.svg", ["OBS"]))
@@ -70,6 +74,19 @@ class PluginAssetManager:
 
         self.CAM_OFF_ICON = Media.from_path(path=self.get_asset_path("cam_off.svg", subdirs=["Cam"]))
         self.CAM_OFF_MEDIA = self.CAM_OFF_ICON.get_final_media()
+
+        self.BUFFER_ON_ICON = Media.from_path(path=self.get_asset_path("buffer_on.svg", subdirs=["ReplayBuffer", "Replay"]))
+        self.BUFFER_ON_MEDIA = self.BUFFER_ON_ICON.get_final_media()
+
+        self.BUFFER_OFF_ICON = Media.from_path(path=self.get_asset_path("buffer_off.svg", subdirs=["ReplayBuffer", "Replay"]))
+        self.BUFFER_OFF_MEDIA = self.BUFFER_OFF_ICON.get_final_media()
+
+        self.SAVE_BUFFER_ICON = Media(layers=[
+            ImageLayer(image=self.BUFFER_ON_MEDIA),
+            ImageLayer.from_image_path(media_path=self.get_asset_path("save_on.svg", subdirs=["ReplayBuffer", "Save"]),
+                                       size=0.4, valign=-0.1)
+        ])
+        self.SAVE_BUFFER_MEDIA = self.SAVE_BUFFER_ICON.get_final_media()
 
     def add_colors(self):
         self.PRIMARY_BACKGROUND = [87, 109, 167, 255]

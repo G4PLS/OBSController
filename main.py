@@ -13,6 +13,7 @@ from .actions.PluginAssetManager import PluginAssetManager
 from .actions.Recording.RecordingAction import RecordingAction
 from .actions.VirtualCamera.VirtualCameraAction import VirtualCameraAction
 from .actions.OBSActions.ReconnectAction import ReconnectAction
+from .actions.ReplayBuffer.ReplayBufferAction import ReplayBufferAction
 
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
 
@@ -67,6 +68,19 @@ class OBSController(PluginBase):
             }
         )
         self.add_action_holder(self.virtual_cam_action)
+
+        self.replay_buffer_action = ActionHolder(
+            plugin_base=self,
+            action_base=ReplayBufferAction,
+            action_id_suffix="ReplayBuffer",
+            action_name="Replay Buffer",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.SUPPORTED,
+                Input.Touchscreen: ActionInputSupport.SUPPORTED
+            }
+        )
+        self.add_action_holder(self.replay_buffer_action)
 
         #
         # EVENT HOLDER

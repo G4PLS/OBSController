@@ -53,12 +53,12 @@ Other Features may come in the future so this list may expand. This is a test
 
 ### Replay Buffer
 
-* [ ]  Start¹
-* [ ]  Stop¹
-* [ ]  Toggle Buffer¹
-* [ ]  Save Buffer
-* [ ]  Open last Save
-* [ ]  Status Display
+* [X]  Start¹
+* [X]  Stop¹
+* [X]  Toggle Buffer¹
+* [X]  Save Buffer
+* [X]  Open last Save
+* [X]  Status Display
 
 ¹ Use Modes (Start, Stop, Toggle)
 

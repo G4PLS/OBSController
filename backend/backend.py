@@ -95,6 +95,28 @@ class Backend(BackendBase):
         return self.obs_controller.send_request("get_virtual_cam_status")
 
     #
+    # REPLAY BUFFER
+    #
+
+    def get_replay_buffer_status(self):
+        return self.obs_controller.send_request("get_replay_buffer_status")
+
+    def start_replay_buffer(self):
+        self.obs_controller.send_request("start_replay_buffer")
+
+    def stop_replay_buffer(self):
+        self.obs_controller.send_request("stop_replay_buffer")
+
+    def toggle_replay_buffer(self):
+        return self.obs_controller.send_request("toggle_replay_buffer")
+
+    def save_replay_buffer(self):
+        self.obs_controller.send_request("save_replay_buffer")
+
+    def get_last_replay_buffer_replay(self):
+        return self.obs_controller.send_request("get_last_replay_buffer_replay")
+
+    #
     # STREAMING
     #
 
