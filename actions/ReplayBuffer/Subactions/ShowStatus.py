@@ -25,6 +25,9 @@ class ShowStatus(MultiActionItem):
     #
 
     def display_icon(self, status):
+        if not status:
+            return
+
         if status.get("output_active", True):
             self.action_base.set_background_color(self.plugin_base.asset_manager.PRIMARY_BACKGROUND)
             self.action_base.set_media(image=self.plugin_base.asset_manager.BUFFER_ON_MEDIA)
