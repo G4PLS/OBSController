@@ -14,6 +14,7 @@ from .actions.Recording.RecordingAction import RecordingAction
 from .actions.VirtualCamera.VirtualCameraAction import VirtualCameraAction
 from .actions.OBSActions.ReconnectAction import ReconnectAction
 from .actions.ReplayBuffer.ReplayBufferAction import ReplayBufferAction
+from .actions.Hotkey.HotkeyAction import HotkeyAction
 
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
 
@@ -81,6 +82,19 @@ class OBSController(PluginBase):
             }
         )
         self.add_action_holder(self.replay_buffer_action)
+
+        self.hotkey_holder = ActionHolder(
+            plugin_base=self,
+            action_base=HotkeyAction,
+            action_id_suffix="Hotkey",
+            action_name="Hotkey",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.SUPPORTED,
+                Input.Touchscreen: ActionInputSupport.SUPPORTED
+            }
+        )
+        self.add_action_holder(self.hotkey_holder)
 
         #
         # EVENT HOLDER

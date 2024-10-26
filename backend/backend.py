@@ -117,6 +117,19 @@ class Backend(BackendBase):
         return self.obs_controller.send_request("get_last_replay_buffer_replay")
 
     #
+    # HOTKEY
+    #
+
+    def get_hotkey_list(self):
+        return self.obs_controller.send_request("get_hot_key_list")
+
+    def trigger_hotkey_by_name(self, hotkey_name: str):
+        self.obs_controller.send_request("trigger_hot_key_by_name", hotkey_name)
+
+    def trigger_hot_key_by_sequence(self, key_id, press_shift, press_ctrl, press_alt, press_cmd):
+        pass
+
+    #
     # STREAMING
     #
 
