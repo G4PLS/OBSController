@@ -2,6 +2,8 @@
 
 The new and Improved OBS Plugin for StreamController!
 
+Getting help with the Icons would be a huge help as they are the most time intensive thing and Im not a designer so my icons are not the best
+
 ## Table of Contents
 
 - [Feature Checklist](#feature-checklist)
