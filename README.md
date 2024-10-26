@@ -78,7 +78,7 @@ Other Features may come in the future so this list may expand. This is a test
 
 ### Hotkey
 
-* [ ]  Trigger by Name
+* [X]  Trigger by Name
 * [ ]  Trigger by Sequence
 
 ### Virtual Camera
