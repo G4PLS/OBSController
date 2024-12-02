@@ -2,21 +2,24 @@
 import copy
 import os
 
-from gi.repository import Gtk
-from loguru import logger as log
 from src.backend.DeckManagement.InputIdentifier import Input
 from src.backend.PluginManager.ActionHolder import ActionHolder
 from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
 from src.backend.PluginManager.PluginBase import PluginBase
-from .actions.PluginAssetManager import PluginAssetManager
+from src.backend.PluginManager.PluginSettings.Asset import Color, Icon
+from .Settings import Settings
 
 from .actions.Recording.RecordingAction import RecordingAction
 from .actions.VirtualCamera.VirtualCameraAction import VirtualCameraAction
 from .actions.OBSActions.ReconnectAction import ReconnectAction
 from .actions.ReplayBuffer.ReplayBufferAction import ReplayBufferAction
-from .actions.Hotkey.HotkeyAction import HotkeyAction
 
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
+
+import gi
+gi.require_version("Gtk", "4.0")
+from gi.repository import Gtk
+from loguru import logger as log
 
 """ Element Colors
 Primary: [186, 233, 255, 255]
@@ -26,7 +29,7 @@ Secondary: [92, 115, 179, 255]
 class OBSController(PluginBase):
     def __init__(self):
         super().__init__()
-        self.init_vars()
+        self.has_plugin_settings = True
 
         self.launch_backend(os.path.join(self.PATH, "backend", "backend.py"), os.path.join(self.PATH, "backend", ".venv"))
         self.wait_for_backend(10)
@@ -83,19 +86,6 @@ class OBSController(PluginBase):
         )
         self.add_action_holder(self.replay_buffer_action)
 
-        self.hotkey_holder = ActionHolder(
-            plugin_base=self,
-            action_base=HotkeyAction,
-            action_id_suffix="Hotkey",
-            action_name="Hotkey",
-            action_support= {
-                Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.SUPPORTED,
-                Input.Touchscreen: ActionInputSupport.SUPPORTED
-            }
-        )
-        self.add_action_holder(self.hotkey_holder)
-
         #
         # EVENT HOLDER
         #
@@ -108,12 +98,24 @@ class OBSController(PluginBase):
 
         self.register()
 
+        self.add_color("primary", color=(186, 233, 255, 255))
+        self.add_color("secondary", color=(92, 115, 179, 255))
+
+        self.add_icon("obs", path=self.get_asset_path("obs.svg", subdirs=["OBS"]))
+        self.add_icon("connected", path=self.get_asset_path("connected.svg", subdirs=["OBS"]))
+        self.add_icon("disconnected", path=self.get_asset_path("disconnected.svg", subdirs=["OBS"]))
+
+        self.add_icon("rec_on", path=self.get_asset_path("on.svg", subdirs=["Recording"]), size=0.75)
+        self.add_icon("rec_off", path=self.get_asset_path("off.svg", subdirs=["Recording"]), size=0.75)
+        self.add_icon("rec_paused", path=self.get_asset_path("paused.svg", subdirs=["Recording"]), size=0.75)
+
+        self.add_icon("paused", path=self.get_asset_path("paused.svg", subdirs=["Pause"]))
+        self.add_icon("unpaused", path=self.get_asset_path("unpaused.svg", subdirs=["Pause"]))
+
+        self.asset_manager.save_assets()
+
     def get_selector_icon(self) -> Gtk.Widget:
         return Gtk.Image(file=os.path.join(self.PATH, "assets", "OBS", "obs.svg"))
-
-    def init_vars(self):
-        self.lm = self.locale_manager
-        self.asset_manager = PluginAssetManager(self)
 
     def trigger(self, event_name, message):
         """
@@ -138,3 +140,6 @@ class OBSController(PluginBase):
             log.warning(f"{plugin_id} does not exist")
         else:
             plugin.connect_to_backend_event(event_id=event_id, obs_event_name=obs_event_name, callback=callback)
+
+    def get_settings_area(self):
+        return Settings(self)

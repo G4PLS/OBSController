@@ -61,6 +61,10 @@ class Buffer(MultiActionItem):
     def on_ready(self):
         self.load_settings()
 
+    def on_update(self):
+        status = self.plugin_base.backend.get_replay_buffer_status()
+        self.display_icon(status)
+
     def on_key_down(self):
         if self.action_items[self.mode_index].callback:
             self.action_items[self.mode_index].callback()
@@ -93,7 +97,7 @@ class Buffer(MultiActionItem):
     #
 
     def display_icon(self, status):
-        if status.get("output_active", True):
+        if status and status.get("output_active", True):
             self.action_base.set_background_color(self.plugin_base.asset_manager.PRIMARY_BACKGROUND)
             self.action_base.set_media(image=self.plugin_base.asset_manager.BUFFER_ON_MEDIA)
         else:

@@ -1,38 +1,23 @@
 from gi.repository import Adw
 
 from ..internal.MultiAction.MultiAction import MultiAction
-from ..internal.PluginConfig import PluginConfigButton
-from ..internal.OBSConfig import OBSConfigWindow
-
 
 class OBSMultiAction(MultiAction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.plugin_config = PluginConfigButton(self.plugin_base, OBSConfigWindow, True)
         self.has_configuration = True
-        self.obs_config_setup = False
+        self.plugin_base.asset_manager.colors.add_listener(self.color_changed)
+        self.plugin_base.asset_manager.icons.add_listener(self.icon_changed)
 
-    def load_settings(self):
-        super().load_settings()
+    async def color_changed(self, event, key, asset):
+        pass
 
-        plugin_settings = self.plugin_base.get_settings()
-        self.obs_config_setup = plugin_settings.get("first-setup", False)
+    async def icon_changed(self, event, key, asset):
+        pass
 
     def build_ui(self, ui: Adw.PreferencesGroup = None) -> Adw.PreferencesGroup:
-        ui = Adw.PreferencesGroup()
-
-        self.plugin_config.unparent()
-        ui.add(self.plugin_config)
-
-        if not self.obs_config_setup:
-            self.plugin_config.open_config_window()
-            self.obs_config_setup = True
-
-            plugin_settings = self.plugin_base.get_settings()
-            plugin_settings["first-setup"] = self.obs_config_setup
-            self.plugin_base.set_settings(plugin_settings)
-
+        self.ui = Adw.PreferencesGroup()
         return super().build_ui(ui)
 
     def on_action_changed(self, *args):

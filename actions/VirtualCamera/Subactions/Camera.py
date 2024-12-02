@@ -30,7 +30,6 @@ class Camera(MultiActionItem):
 
     def build_ui(self):
         self.action_mode = ComboActionRow(title="Action Mode")
-
         self.add(self.action_mode)
 
     #

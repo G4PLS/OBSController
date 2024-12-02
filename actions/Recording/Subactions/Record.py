@@ -21,6 +21,9 @@ class Record(MultiActionItem):
         self.mode_index: int = 2
         self.recording_offset: int = 0
 
+        self.primary_background = self.plugin_base.asset_manager.colors.get_asset_values("primary")
+        self.secondary_background = self.plugin_base.asset_manager.colors.get_asset_values("secondary")
+
         self.last_timecode: str = "00:00:00"
 
         self.location_items = [
@@ -128,16 +131,22 @@ class Record(MultiActionItem):
     def on_ready(self):
         self.load_settings()
 
+    def on_update(self):
+        status = self.plugin_base.backend.get_record_status()
+
+        if not status:
+            self.action_base.set_background_color(self.secondary_background)
+            return
+
+        self.display_icon(status)
+        self.display_timecode(status)
+
     def on_key_down(self):
         if self.action_items[self.mode_index].callback:
             self.action_items[self.mode_index].callback()
 
     def on_tick(self):
-        status = self.plugin_base.backend.get_record_status()
-
-        if not status:
-            self.action_base.set_background_color(self.plugin_base.asset_manager.SECONDARY_BACKGROUND)
-            return
+        status = self.plugin_base.backend.get_record_status() or {}
 
         self.display_icon(status)
         self.display_timecode(status)
@@ -169,15 +178,16 @@ class Record(MultiActionItem):
     #
 
     def display_icon(self, status):
-        if status.get("output_active", True):
-            self.action_base.set_background_color(self.plugin_base.asset_manager.PRIMARY_BACKGROUND)
+        if status.get("output_active", False):
+            self.action_base.set_background_color(self.primary_background)
             if status.get("output_paused", False) and self.show_pause_state:
-                self.action_base.set_media(image=self.plugin_base.asset_manager.RECORD_PAUSED_MEDIA)
+                _, render = self.plugin_base.asset_manager.icons.get_asset_values("rec_paused")
             else:
-                self.action_base.set_media(image=self.plugin_base.asset_manager.RECORD_ON_MEDIA)
+                _, render = self.plugin_base.asset_manager.icons.get_asset_values("rec_on")
         else:
-            self.action_base.set_background_color(self.plugin_base.asset_manager.SECONDARY_BACKGROUND)
-            self.action_base.set_media(image=self.plugin_base.asset_manager.RECORD_OFF_MEDIA)
+            self.action_base.set_background_color(self.secondary_background)
+            _, render = self.plugin_base.asset_manager.icons.get_asset_values("rec_off")
+        self.action_base.set_media(image=render)
 
     def display_timecode(self, record_status):
         if self.show_timecode:
@@ -194,7 +204,6 @@ class Record(MultiActionItem):
         if self.location_items[self.location_index].callback:
             self.location_items[self.location_index].callback(self.last_timecode)
         else:
-            print("HERE")
             self.action_base.set_top_label(self.last_timecode)
 
     def milliseconds_to_timestamp(self, milliseconds: int, add_milliseconds: bool = False):

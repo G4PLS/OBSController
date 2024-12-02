@@ -23,6 +23,9 @@ class Pause(MultiActionItem):
             ComboActionItem(name="Toggle", callback=self.plugin_base.backend.toggle_pause),
         ]
 
+        self.primary_background = self.plugin_base.asset_manager.colors.get_asset_values("primary")
+        self.secondary_background = self.plugin_base.asset_manager.colors.get_asset_values("secondary")
+
         self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed",
                                                   self.record_state_changed)
 
@@ -87,7 +90,7 @@ class Pause(MultiActionItem):
         status = self.plugin_base.backend.get_record_status()
 
         if not status:
-            self.action_base.set_background_color(self.plugin_base.asset_manager.SECONDARY_BACKGROUND)
+            self.action_base.set_background_color(self.secondary_background)
             return
 
         self.display_icon(status)
@@ -119,8 +122,11 @@ class Pause(MultiActionItem):
         paused = status.get("output_paused", False)
 
         if paused and self.update_with_obs:
-            self.action_base.set_background_color(self.plugin_base.asset_manager.PRIMARY_BACKGROUND)
-            self.action_base.set_media(self.plugin_base.asset_manager.PAUSED_MEDIA)
+            self.action_base.set_background_color(self.primary_background)
+            _, render = self.plugin_base.asset_manager.icons.get_asset_values("paused")
         else:
-            self.action_base.set_background_color(self.plugin_base.asset_manager.SECONDARY_BACKGROUND)
-            self.action_base.set_media(image=self.plugin_base.asset_manager.UNPAUSED_MEDIA)
+            self.action_base.set_background_color(self.secondary_background)
+            _, render = self.plugin_base.asset_manager.icons.get_asset_values("unpaused")
+
+        if render:
+            self.action_base.set_media(image=render)
