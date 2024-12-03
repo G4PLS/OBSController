@@ -2,11 +2,11 @@
 import copy
 import os
 
+from src.backend.DeckManagement.ImageHelpers import image2pixbuf
 from src.backend.DeckManagement.InputIdentifier import Input
 from src.backend.PluginManager.ActionHolder import ActionHolder
 from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
 from src.backend.PluginManager.PluginBase import PluginBase
-from src.backend.PluginManager.PluginSettings.Asset import Color, Icon
 from .Settings import Settings
 
 from .actions.Recording.RecordingAction import RecordingAction
@@ -16,12 +16,14 @@ from .actions.ReplayBuffer.ReplayBufferAction import ReplayBufferAction
 
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
 
+from .globals import Icons, Colors, icon_size
+
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 from loguru import logger as log
 
-""" Element Colors
+""" Icon Colors
 Primary: [186, 233, 255, 255]
 Secondary: [92, 115, 179, 255]
 """
@@ -97,25 +99,39 @@ class OBSController(PluginBase):
         self.add_event_holder(self.obs_event_holder)
 
         self.register()
+        self._add_assets()
 
-        self.add_color("primary", color=(186, 233, 255, 255))
-        self.add_color("secondary", color=(92, 115, 179, 255))
+    def _add_assets(self):
+        self.add_color(Colors.PRIMARY, color=(71, 95, 161, 255))
+        self.add_color(Colors.SECONDARY, color=(34, 45, 74, 255))
 
-        self.add_icon("obs", path=self.get_asset_path("obs.svg", subdirs=["OBS"]))
-        self.add_icon("connected", path=self.get_asset_path("connected.svg", subdirs=["OBS"]))
-        self.add_icon("disconnected", path=self.get_asset_path("disconnected.svg", subdirs=["OBS"]))
+        self.add_icon(Icons.OBS, path=self.get_asset_path("obs.svg", subdirs=["OBS"]))
+        self.add_icon(Icons.CONNECTED, path=self.get_asset_path("connected.svg", subdirs=["OBS"]), size=icon_size)
+        self.add_icon(Icons.DISCONNECTED, path=self.get_asset_path("disconnected.svg", subdirs=["OBS"]), size=icon_size)
 
-        self.add_icon("rec_on", path=self.get_asset_path("on.svg", subdirs=["Recording"]), size=0.75)
-        self.add_icon("rec_off", path=self.get_asset_path("off.svg", subdirs=["Recording"]), size=0.75)
-        self.add_icon("rec_paused", path=self.get_asset_path("paused.svg", subdirs=["Recording"]), size=0.75)
+        self.add_icon(Icons.REC_ON, path=self.get_asset_path("on.svg", subdirs=["Recording"]), size=icon_size)
+        self.add_icon(Icons.REC_OFF, path=self.get_asset_path("off.svg", subdirs=["Recording"]), size=icon_size)
+        self.add_icon(Icons.REC_PAUSED, path=self.get_asset_path("paused.svg", subdirs=["Recording"]), size=icon_size)
+        self.add_icon(Icons.REC_CHAPTER, path=self.get_asset_path("chapter.svg", subdirs=["Recording"]), size=icon_size)
+        self.add_icon(Icons.REC_SPLIT, path=self.get_asset_path("split.svg", subdirs=["Recording"]), size=icon_size)
 
-        self.add_icon("paused", path=self.get_asset_path("paused.svg", subdirs=["Pause"]))
-        self.add_icon("unpaused", path=self.get_asset_path("unpaused.svg", subdirs=["Pause"]))
+        self.add_icon(Icons.PAUSED, path=self.get_asset_path("paused.svg", subdirs=["Pause"]), size=icon_size)
+        self.add_icon(Icons.UNPAUSED, path=self.get_asset_path("unpaused.svg", subdirs=["Pause"]), size=icon_size)
 
-        self.asset_manager.save_assets()
+        self.add_icon(Icons.BUFFER_ON, path=self.get_asset_path("on.svg", subdirs=["ReplayBuffer"]), size=icon_size)
+        self.add_icon(Icons.BUFFER_OFF, path=self.get_asset_path("off.svg", subdirs=["ReplayBuffer"]), size=icon_size)
+        self.add_icon(Icons.SAVE_BUFFER, path=self.get_asset_path("save.svg", subdirs=["ReplayBuffer"]), size=icon_size)
+        self.add_icon(Icons.OPEN_BUFFER, path=self.get_asset_path("open.svg", subdirs=["ReplayBuffer"]), size=icon_size)
+
+        self.add_icon(Icons.VIRTUAL_CAM_ON, path=self.get_asset_path("on.svg", subdirs=["VirtualCamera"]),
+                      size=icon_size)
+        self.add_icon(Icons.VIRTUAL_CAM_OFF, path=self.get_asset_path("off.svg", subdirs=["VirtualCamera"]),
+                      size=icon_size)
 
     def get_selector_icon(self) -> Gtk.Widget:
-        return Gtk.Image(file=os.path.join(self.PATH, "assets", "OBS", "obs.svg"))
+        _, rendered = self.asset_manager.icons.get_asset_values(Icons.OBS)
+        buff = image2pixbuf(rendered)
+        return Gtk.Image.new_from_pixbuf(buff)
 
     def trigger(self, event_name, message):
         """

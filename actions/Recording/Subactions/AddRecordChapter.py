@@ -2,8 +2,11 @@ import threading
 from copy import deepcopy
 from sqlite3 import connect
 
+from GtkHelper.GtkHelper import better_disconnect
 from src.backend.DeckManagement.Media.ImageLayer import ImageLayer
 from src.backend.DeckManagement.Media.Media import Media
+from ...OBSMultiActionItem import OBSMultiActionItem
+from ....globals import Icons
 from ....internal.ComboAction.ComboActionRow import ComboActionItem, ComboActionRow
 from ....internal.MultiAction.MultiActionItem import MultiActionItem
 
@@ -16,7 +19,7 @@ from gi.repository import Gtk, Adw
 import rpyc
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
 
-class AddRecordChapter(MultiActionItem):
+class AddRecordChapter(OBSMultiActionItem):
     FIELD_NAME = "Add Record Chapter"
 
     def __init__(self, *args, **kwargs):
@@ -25,17 +28,42 @@ class AddRecordChapter(MultiActionItem):
         self.chapter_name: str = ""
         self.location_index: int = 0
 
-        self.error_showing = False
-
-        self.CHAPTER_ERROR: Media = deepcopy(self.plugin_base.asset_manager.ERROR_ICON)
-        self.CHAPTER_ERROR.prepend_layer(ImageLayer(image=self.plugin_base.asset_manager.RECORD_CHAPTER_MEDIA))
-        self.CHAPTER_ERROR = self.CHAPTER_ERROR.get_final_media()
-
         self.location_items = [
             ComboActionItem(name="Top", callback=self.action_base.set_top_label),
             ComboActionItem(name="Center", callback=self.action_base.set_center_label),
             ComboActionItem(name="Bottom", callback=self.action_base.set_bottom_label)
         ]
+
+    # Action Events
+
+    def on_ready(self):
+        self.load_settings()
+
+    def on_update(self):
+        self.action_base.set_background_color(self.secondary_color)
+
+        self.display_chapter_label()
+
+        _, render = self.plugin_base.asset_manager.icons.get_asset_values(Icons.REC_CHAPTER)
+        self.action_base.set_media(image=render)
+
+    def on_key_down(self):
+        if not self.chapter_name:
+            return
+
+        status_code = self.plugin_base.backend.custom_request("CreateRecordChapter", {"chapterName": self.chapter_name})
+
+        if status_code == "501" or status_code == "702":
+            pass
+
+    # Asyncs
+
+    async def icon_changed(self, event: str, key: str, asset):
+        if key in [Icons.REC_CHAPTER]:
+            self.on_update()
+
+    def color_changed(self):
+        self.on_update()
 
     #
     # UI
@@ -58,11 +86,8 @@ class AddRecordChapter(MultiActionItem):
         self.chapter_name_entry.connect("changed", self.chapter_name_changed)
 
     def disconnect_events(self):
-        try:
-            self.chapter_location.disconnect_by_func(self.chapter_location_changed)
-            self.chapter_name_entry.disconnect_by_func(self.chapter_name_changed)
-        except:
-            pass
+        better_disconnect(self.chapter_location, self.chapter_location_changed)
+        better_disconnect(self.chapter_name_entry, self.chapter_name_changed)
 
     def chapter_location_changed(self, object, item, index):
         settings = self.get_settings()
@@ -87,32 +112,6 @@ class AddRecordChapter(MultiActionItem):
         self.set_settings(settings)
 
     #
-    # ACTION EVENTS
-    #
-
-    def on_ready(self):
-        self.load_settings()
-
-    def on_update(self):
-        if self.error_showing:
-            return
-        self.display_chapter_label()
-        self.action_base.set_media(image=self.plugin_base.asset_manager.RECORD_CHAPTER_MEDIA)
-
-    def on_tick(self):
-        self.action_base.set_background_color(self.plugin_base.asset_manager.SECONDARY_BACKGROUND)
-
-    def on_key_down(self):
-        if not self.chapter_name:
-            return
-
-        status_code = self.plugin_base.backend.custom_request("CreateRecordChapter", {"chapterName": self.chapter_name})
-
-        if status_code == "501" or status_code == "702":
-            self.action_base.set_media(image=self.CHAPTER_ERROR)
-            threading.Timer(0.5, self.reset_error).start()
-
-    #
     # SETTINGS
     #
 
@@ -133,8 +132,8 @@ class AddRecordChapter(MultiActionItem):
         self.connect_events()
 
     #
-    #
     # MISC
+    #
 
     def display_chapter_label(self):
         if not self.chapter_name:
@@ -144,7 +143,3 @@ class AddRecordChapter(MultiActionItem):
             self.location_items[self.location_index].callback(self.chapter_name)
         else:
             self.action_base.set_top_label(self.chapter_name)
-
-    def reset_error(self):
-        self.error_showing = False
-        self.on_update()

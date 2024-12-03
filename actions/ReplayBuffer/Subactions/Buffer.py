@@ -1,3 +1,6 @@
+from GtkHelper.GtkHelper import better_disconnect
+from ...OBSMultiActionItem import OBSMultiActionItem
+from ....globals import Icons
 from ....internal.MultiAction.MultiActionItem import MultiActionItem
 from ....internal.ComboAction.ComboActionRow import ComboActionRow, ComboActionItem
 from ....internal.DuoPreferencesRow import DuoPreferencesRow
@@ -7,7 +10,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 
-class Buffer(MultiActionItem):
+class Buffer(OBSMultiActionItem):
     FIELD_NAME = "Buffer"
 
     def __init__(self, *args, **kwargs):
@@ -23,6 +26,34 @@ class Buffer(MultiActionItem):
 
         self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_replay_buffer_state_changed",
                                                   self.buffer_state_changed)
+
+    # Action Events
+
+    def on_ready(self):
+        self.load_settings()
+
+    def on_update(self):
+        self.display_icon(None)
+
+    def on_key_down(self):
+        if self.action_items[self.mode_index].callback:
+            self.action_items[self.mode_index].callback()
+
+    def on_tick(self):
+        status = self.plugin_base.backend.get_replay_buffer_status() or {}
+        self.display_icon(status)
+
+    # Asyncs
+
+    async def buffer_state_changed(self, event_id: str, obs_event: str, message: dict):
+        self.display_icon(message)
+
+    async def icon_changed(self, event: str, key: str, asset):
+        if key in [Icons.BUFFER_ON, Icons.BUFFER_OFF]:
+            self.on_tick()
+
+    def color_changed(self):
+        self.on_tick()
 
     #
     # UI
@@ -41,10 +72,7 @@ class Buffer(MultiActionItem):
         self.action_mode.connect("item-changed", self.action_mode_changed)
 
     def disconnect_events(self):
-        try:
-            self.action_mode.disconnect_by_func(self.action_mode_changed)
-        except:
-            pass
+        better_disconnect(self.action_mode, self.action_mode_changed)
 
     def action_mode_changed(self, object, item, index):
         settings = self.get_settings()
@@ -53,30 +81,6 @@ class Buffer(MultiActionItem):
         settings["mode-index"] = self.mode_index
 
         self.set_settings(settings)
-
-    #
-    # ACTION EVENTS
-    #
-
-    def on_ready(self):
-        self.load_settings()
-
-    def on_update(self):
-        status = self.plugin_base.backend.get_replay_buffer_status()
-        self.display_icon(status)
-
-    def on_key_down(self):
-        if self.action_items[self.mode_index].callback:
-            self.action_items[self.mode_index].callback()
-
-    def on_tick(self):
-        status = self.plugin_base.backend.get_replay_buffer_status()
-
-        if not status:
-            self.action_base.set_background_color(self.plugin_base.asset_manager.SECONDARY_BACKGROUND)
-            return
-
-        self.display_icon(status)
 
     #
     # SETTINGS
@@ -97,12 +101,10 @@ class Buffer(MultiActionItem):
     #
 
     def display_icon(self, status):
-        if status and status.get("output_active", True):
-            self.action_base.set_background_color(self.plugin_base.asset_manager.PRIMARY_BACKGROUND)
-            self.action_base.set_media(image=self.plugin_base.asset_manager.BUFFER_ON_MEDIA)
+        if status and status.get("output_active", False):
+            self.action_base.set_background_color(self.primary_color)
+            _, render = self.plugin_base.asset_manager.icons.get_asset_values(Icons.BUFFER_ON)
         else:
-            self.action_base.set_background_color(self.plugin_base.asset_manager.SECONDARY_BACKGROUND)
-            self.action_base.set_media(image=self.plugin_base.asset_manager.BUFFER_OFF_MEDIA)
-
-    async def buffer_state_changed(self, *args):
-        self.display_icon(args[2])
+            self.action_base.set_background_color(self.secondary_color)
+            _, render = self.plugin_base.asset_manager.icons.get_asset_values(Icons.BUFFER_OFF)
+        self.action_base.set_media(image=render)

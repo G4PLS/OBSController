@@ -1,6 +1,8 @@
-from ....internal.MultiAction.MultiActionItem import MultiActionItem
+from ...OBSMultiActionItem import OBSMultiActionItem
 from ....internal.ComboAction.ComboActionRow import ComboActionRow, ComboActionItem
-from ....internal.DuoPreferencesRow import DuoPreferencesRow
+from ....internal.AdwGrid import AdwGrid
+from ....globals import Icons, Colors
+from GtkHelper.GtkHelper import better_disconnect
 
 import gi
 
@@ -9,7 +11,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw
 
 
-class Record(MultiActionItem):
+class Record(OBSMultiActionItem):
     FIELD_NAME = "Record"
 
     def __init__(self, *args, **kwargs):
@@ -20,9 +22,6 @@ class Record(MultiActionItem):
         self.location_index: int = 0
         self.mode_index: int = 2
         self.recording_offset: int = 0
-
-        self.primary_background = self.plugin_base.asset_manager.colors.get_asset_values("primary")
-        self.secondary_background = self.plugin_base.asset_manager.colors.get_asset_values("secondary")
 
         self.last_timecode: str = "00:00:00"
 
@@ -40,28 +39,60 @@ class Record(MultiActionItem):
         self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed",
                                                   self.record_state_changed)
 
-    #
+    # Action Events
+
+    def on_ready(self):
+        self.load_settings()
+
+    def on_update(self):
+        status = self.plugin_base.backend.get_record_status() or {}
+
+        self.display_icon(status)
+        self.display_timecode(status)
+
+    def on_key_down(self):
+        if self.action_items[self.mode_index].callback:
+            self.action_items[self.mode_index].callback()
+
+    def on_tick(self):
+        status = self.plugin_base.backend.get_record_status() or {}
+
+        self.display_icon(status)
+        self.display_timecode(status)
+
+    # ASYNCS
+
+    async def record_state_changed(self, event_id: str, obs_event: str, message: dict):
+        self.on_tick()
+
+    async def icon_changed(self, event: str, key: str, asset):
+        if key in [Icons.REC_ON, Icons.REC_OFF, Icons.REC_PAUSED]:
+            self.on_tick()
+
+    def color_changed(self):
+        self.on_tick()
+
     # UI
-    #
 
     def build_ui(self):
         self.action_mode = ComboActionRow(title="Action Mode")
         self.pause_state_switch = Adw.SwitchRow(title="Show Pause State")
         self.timecode_switch = Adw.SwitchRow(title="Show Timecode", hexpand=True)
         self.timecode_location = ComboActionRow(title="Timecode Location", hexpand=True)
-        self.timecode_selector = DuoPreferencesRow(self.timecode_switch, self.timecode_location)
+
+        timecode_grid = AdwGrid()
+        timecode_grid.add_widget(self.timecode_switch, 0, 0)
+        timecode_grid.add_widget(self.timecode_location, 1, 0)
 
         self.offset_spin = Adw.SpinRow.new_with_range(-10000, 10000, 1)
         self.offset_spin.set_title("Recording Offset In ms")
 
         self.add(self.action_mode)
         self.add(self.pause_state_switch)
-        self.add(self.timecode_selector)
+        self.add(timecode_grid)
         self.add(self.offset_spin)
 
-    #
-    # UI EVENTS
-    #
+    # UI Events
 
     def connect_events(self):
         self.action_mode.connect("item-changed", self.action_mode_changed)
@@ -71,14 +102,11 @@ class Record(MultiActionItem):
         self.offset_spin.connect("changed", self.offset_changed)
 
     def disconnect_events(self):
-        try:
-            self.action_mode.disconnect_by_func(self.action_mode_changed)
-            self.timecode_switch.disconnect_by_func(self.timecode_switch_changed)
-            self.timecode_location.disconnect_by_func(self.timecode_location_changed)
-            self.pause_state_switch.disconnect_by_func(self.pause_state_switch_changed)
-            self.offset_spin.disconnect_by_func(self.offset_changed)
-        except:
-            pass
+        better_disconnect(self.action_mode, self.action_mode_changed)
+        better_disconnect(self.timecode_switch, self.timecode_switch_changed)
+        better_disconnect(self.timecode_location, self.timecode_location_changed)
+        better_disconnect(self.pause_state_switch, self.pause_state_switch_changed)
+        better_disconnect(self.offset_spin, self.offset_changed)
 
     def action_mode_changed(self, object, item, index):
         settings = self.get_settings()
@@ -124,36 +152,7 @@ class Record(MultiActionItem):
 
         self.set_settings(settings)
 
-    #
-    # ACTION EVENTS
-    #
-
-    def on_ready(self):
-        self.load_settings()
-
-    def on_update(self):
-        status = self.plugin_base.backend.get_record_status()
-
-        if not status:
-            self.action_base.set_background_color(self.secondary_background)
-            return
-
-        self.display_icon(status)
-        self.display_timecode(status)
-
-    def on_key_down(self):
-        if self.action_items[self.mode_index].callback:
-            self.action_items[self.mode_index].callback()
-
-    def on_tick(self):
-        status = self.plugin_base.backend.get_record_status() or {}
-
-        self.display_icon(status)
-        self.display_timecode(status)
-
-    #
-    # SETTINGS
-    #
+    # Settings
 
     def load_settings(self):
         settings = self.get_settings()
@@ -173,20 +172,18 @@ class Record(MultiActionItem):
         self.pause_state_switch.set_active(self.show_pause_state)
         self.offset_spin.set_value(self.recording_offset)
 
-    #
     # MISC
-    #
 
     def display_icon(self, status):
         if status.get("output_active", False):
-            self.action_base.set_background_color(self.primary_background)
+            self.action_base.set_background_color(self.primary_color)
             if status.get("output_paused", False) and self.show_pause_state:
-                _, render = self.plugin_base.asset_manager.icons.get_asset_values("rec_paused")
+                _, render = self.plugin_base.asset_manager.icons.get_asset_values(Icons.REC_PAUSED)
             else:
-                _, render = self.plugin_base.asset_manager.icons.get_asset_values("rec_on")
+                _, render = self.plugin_base.asset_manager.icons.get_asset_values(Icons.REC_ON)
         else:
-            self.action_base.set_background_color(self.secondary_background)
-            _, render = self.plugin_base.asset_manager.icons.get_asset_values("rec_off")
+            self.action_base.set_background_color(self.secondary_color)
+            _, render = self.plugin_base.asset_manager.icons.get_asset_values(Icons.REC_OFF)
         self.action_base.set_media(image=render)
 
     def display_timecode(self, record_status):
@@ -222,6 +219,3 @@ class Record(MultiActionItem):
             out += f".{int(milliseconds):03}"
 
         return out
-
-    async def record_state_changed(self, event_id: str, obs_event: str, message: dict):
-        self.on_tick()

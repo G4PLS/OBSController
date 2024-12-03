@@ -12,9 +12,9 @@ class ReconnectAction(OBSAction):
         if key == "connected" or key == "disconnected":
             self.update_status(self.plugin_base.backend.get_connected())
 
-    async def color_changed(self, event, key, asset: Color):
-        if key == "secondary":
-            self.set_background_color(list(asset._color))
+    def color_changed(self):
+        self.set_background_color(self.secondary_color)
+
     #
     # ACTION EVENTS
     #

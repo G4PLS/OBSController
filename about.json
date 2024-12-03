@@ -1,0 +1,24 @@
+{
+  "author": "G4PLS",
+  "release-notes": {
+      "path": "release_notes.notes",
+      "version": "1.0.0"
+  },
+  "credits": {
+    "Main": [
+        "HEY",
+        "NOPE"
+    ],
+    "Contributors": [
+        "CORE",
+        "GAPLS"
+    ]
+  },
+  "comments": {
+    "en_US": "COMMENT",
+    "de_DE": "KOMMENTAR"
+  },
+  "acknowledgements": {
+    "SECTION": ["PEOPLE"]
+  }
+}

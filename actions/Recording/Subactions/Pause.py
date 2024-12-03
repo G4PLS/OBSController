@@ -1,3 +1,5 @@
+from GtkHelper.GtkHelper import better_disconnect
+from ...OBSMultiActionItem import OBSMultiActionItem
 from ....internal.MultiAction.MultiActionItem import MultiActionItem
 from ....internal.ComboAction.ComboActionRow import ComboActionRow, ComboActionItem
 
@@ -7,8 +9,9 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw
 
+from ....globals import Icons, Colors
 
-class Pause(MultiActionItem):
+class Pause(OBSMultiActionItem):
     FIELD_NAME = "Pause"
 
     def __init__(self, *args, **kwargs):
@@ -23,14 +26,34 @@ class Pause(MultiActionItem):
             ComboActionItem(name="Toggle", callback=self.plugin_base.backend.toggle_pause),
         ]
 
-        self.primary_background = self.plugin_base.asset_manager.colors.get_asset_values("primary")
-        self.secondary_background = self.plugin_base.asset_manager.colors.get_asset_values("secondary")
-
         self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_record_state_changed",
                                                   self.record_state_changed)
 
+    # Action Events
+
     def on_ready(self):
         self.load_settings()
+
+    def on_key_down(self):
+        if self.action_items[self.mode_index].callback:
+            self.action_items[self.mode_index].callback()
+
+    def on_tick(self):
+        status = self.plugin_base.backend.get_record_status() or {}
+
+        self.display_icon(status)
+
+    # Asyncs
+
+    async def icon_changed(self, event: str, key: str, asset):
+        if key in [Icons.PAUSED, Icons.UNPAUSED]:
+            self.on_tick()
+
+    def color_changed(self):
+        self.on_tick()
+
+    async def record_state_changed(self, event_id: str, obs_event: str, message: dict):
+        self.on_tick()
 
     #
     # UI
@@ -53,11 +76,8 @@ class Pause(MultiActionItem):
         self.update_switch.connect("notify::active", self.update_switch_changed)
 
     def disconnect_events(self):
-        try:
-            self.action_mode.disconnect_by_func(self.action_mode_changed)
-            self.update_switch.disconnect_by_func(self.update_switch_changed)
-        except:
-            pass
+        better_disconnect(self.action_mode, self.action_mode_changed)
+        better_disconnect(self.update_switch, self.update_switch_changed)
 
     def action_mode_changed(self, object, item, index):
         settings = self.get_settings()
@@ -75,29 +95,7 @@ class Pause(MultiActionItem):
 
         self.set_settings(settings)
 
-    #
-    # ACTION EVENTS
-    #
-
-    def on_ready(self):
-        self.load_settings()
-
-    def on_key_down(self):
-        if self.action_items[self.mode_index].callback:
-            self.action_items[self.mode_index].callback()
-
-    def on_tick(self):
-        status = self.plugin_base.backend.get_record_status()
-
-        if not status:
-            self.action_base.set_background_color(self.secondary_background)
-            return
-
-        self.display_icon(status)
-
-    #
     # SETTINGS
-    #
 
     def load_settings(self):
         settings = self.get_settings()
@@ -115,18 +113,14 @@ class Pause(MultiActionItem):
     # MISC
     #
 
-    async def record_state_changed(self, event_id: str, obs_event: str, message: dict):
-        self.on_tick()
-
     def display_icon(self, status):
         paused = status.get("output_paused", False)
 
         if paused and self.update_with_obs:
-            self.action_base.set_background_color(self.primary_background)
-            _, render = self.plugin_base.asset_manager.icons.get_asset_values("paused")
+            self.action_base.set_background_color(self.primary_color)
+            _, render = self.plugin_base.asset_manager.icons.get_asset_values(Icons.PAUSED)
         else:
-            self.action_base.set_background_color(self.secondary_background)
-            _, render = self.plugin_base.asset_manager.icons.get_asset_values("unpaused")
+            self.action_base.set_background_color(self.secondary_color)
+            _, render = self.plugin_base.asset_manager.icons.get_asset_values(Icons.UNPAUSED)
 
-        if render:
-            self.action_base.set_media(image=render)
+        self.action_base.set_media(image=render)
