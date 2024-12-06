@@ -6,10 +6,12 @@ from src.backend.DeckManagement.ImageHelpers import image2pixbuf
 from src.backend.DeckManagement.InputIdentifier import Input
 from src.backend.PluginManager.ActionHolder import ActionHolder
 from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
+from src.backend.PluginManager.EventHolder import EventHolder
 from src.backend.PluginManager.PluginBase import PluginBase
 from .Settings import Settings
 
 from .actions.Recording.RecordingAction import RecordingAction
+from .actions.Scene.SceneAction import SceneAction
 from .actions.VirtualCamera.VirtualCameraAction import VirtualCameraAction
 from .actions.OBSActions.ReconnectAction import ReconnectAction
 from .actions.ReplayBuffer.ReplayBufferAction import ReplayBufferAction
@@ -31,6 +33,7 @@ Secondary: [92, 115, 179, 255]
 class OBSController(PluginBase):
     def __init__(self):
         super().__init__()
+        self._add_assets()
         self.has_plugin_settings = True
 
         self.launch_backend(os.path.join(self.PATH, "backend", "backend.py"), os.path.join(self.PATH, "backend", ".venv"))
@@ -88,6 +91,19 @@ class OBSController(PluginBase):
         )
         self.add_action_holder(self.replay_buffer_action)
 
+        self.switch_scene_action = ActionHolder(
+            plugin_base=self,
+            action_base=SceneAction,
+            action_id_suffix="Scene",
+            action_name="Scene",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.SUPPORTED,
+                Input.Touchscreen: ActionInputSupport.SUPPORTED
+            }
+        )
+        self.add_action_holder(self.switch_scene_action)
+
         #
         # EVENT HOLDER
         #
@@ -98,8 +114,13 @@ class OBSController(PluginBase):
         )
         self.add_event_holder(self.obs_event_holder)
 
+        self.connection_event_holder = EventHolder(
+            plugin_base=self,
+            event_id="com.gapls.OBSController::ConnectionChange"
+        )
+        self.add_event_holder(self.connection_event_holder)
+
         self.register()
-        self._add_assets()
 
     def _add_assets(self):
         self.add_color(Colors.PRIMARY, color=(71, 95, 161, 255))
@@ -123,10 +144,8 @@ class OBSController(PluginBase):
         self.add_icon(Icons.SAVE_BUFFER, path=self.get_asset_path("save.svg", subdirs=["ReplayBuffer"]), size=icon_size)
         self.add_icon(Icons.OPEN_BUFFER, path=self.get_asset_path("open.svg", subdirs=["ReplayBuffer"]), size=icon_size)
 
-        self.add_icon(Icons.VIRTUAL_CAM_ON, path=self.get_asset_path("on.svg", subdirs=["VirtualCamera"]),
-                      size=icon_size)
-        self.add_icon(Icons.VIRTUAL_CAM_OFF, path=self.get_asset_path("off.svg", subdirs=["VirtualCamera"]),
-                      size=icon_size)
+        self.add_icon(Icons.VIRTUAL_CAM_ON, path=self.get_asset_path("on.svg", subdirs=["VirtualCamera"]), size=icon_size)
+        self.add_icon(Icons.VIRTUAL_CAM_OFF, path=self.get_asset_path("off.svg", subdirs=["VirtualCamera"]), size=icon_size)
 
     def get_selector_icon(self) -> Gtk.Widget:
         _, rendered = self.asset_manager.icons.get_asset_values(Icons.OBS)

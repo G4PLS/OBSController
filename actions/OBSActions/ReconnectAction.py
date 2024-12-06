@@ -26,7 +26,10 @@ class ReconnectAction(OBSAction):
         self.set_background_color(list(color))
 
     def on_key_down(self):
-        self.update_status(self.plugin_base.backend.reconnect())
+        status = self.plugin_base.backend.reconnect()
+        self.update_status(status)
+
+        self.plugin_base.connection_event_holder.trigger_event(status)
 
     def update_status(self, connection_status: bool):
         if connection_status:

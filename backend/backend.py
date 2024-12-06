@@ -41,6 +41,19 @@ class Backend(BackendBase):
         return self.obs_controller.send_custom_request(request_name, payload)
 
     #
+    # GENERAL
+    #
+
+    def get_version(self):
+        return self.obs_controller.send_request("get_version")
+
+    def get_stats(self):
+        return self.obs_controller.send_request("get_stats")
+
+    def sleep(self, sleep_milis=None, sleep_frames=None):
+        self.obs_controller.send_request("sleep", sleep_milis, sleep_frames)
+
+    #
     # CONFIG
     #
 
@@ -147,5 +160,55 @@ class Backend(BackendBase):
 
     def send_stream_caption(self, caption_text: str):
         self.obs_controller.send_request("send_stream_caption", caption_text)
+
+    #
+    # SOURCE
+    #
+
+    def get_source_active(self, source_name: str):
+        return self.obs_controller.send_request("get_source_active", source_name)
+
+    def get_source_screenshot(self, source_name: str, image_format: str, image_width: int = None, image_height: int = None, quality: int = None):
+        return self.obs_controller.send_request("get_source_screenshot", source_name, image_format, image_width, image_height, quality)
+
+    def save_source_screenshot(self, source_name: str, image_format: str, file_path: str, image_width: int = None, image_height: int = None, quality: int = None):
+        self.obs_controller.send_request("save_source_screenshot", source_name, image_format, file_path, image_width, image_height, quality)
+
+    #
+    # SCENES
+    #
+
+    def get_scene_list(self):
+        return self.obs_controller.send_request("get_scene_list")
+
+    def get_group_list(self):
+        return self.obs_controller.send_request("get_group_list")
+
+    def get_program_scene(self):
+        return self.obs_controller.send_request("get_current_program_scene")
+
+    def set_program_scene(self, scene_name: str):
+        self.obs_controller.send_request("set_current_program_scene", scene_name)
+
+    def get_preview_scene(self):
+        return self.obs_controller.send_request("get_current_preview_scene")
+
+    def set_preview_scene(self, scene_name: str):
+        self.obs_controller.send_request("set_current_preview_scene", scene_name)
+
+    def create_scene(self, scene_name: str):
+        self.obs_controller.send_request("create_scene", scene_name)
+
+    def remove_scene(self, scene_name: str):
+        self.obs_controller.send_request("remove_scene", scene_name)
+
+    def set_scene_name(self, scene_name: str, new_scene_name: str):
+        self.obs_controller.send_request("set_scene_name", scene_name, new_scene_name)
+
+    def get_scene_transition_override(self, scene_name: str):
+        return self.obs_controller.send_request("get_scene_scene_transition_override", scene_name)
+
+    def set_scene_transition_override(self):
+        raise NotImplementedError
 
 backend = Backend()
