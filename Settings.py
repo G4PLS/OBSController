@@ -10,6 +10,10 @@ class Settings(Adw.PreferencesGroup):
         super().__init__(*args, **kwargs)
         self.plugin_base = plugin_base
 
+        self.build_ui()
+        self.load_settings()
+
+    def build_ui(self):
         self.network_entry = NetworkEntryRow()
         self.network_entry.ip_box.connect("ip-changed", self.ip_changed)
         self.network_entry.hostname_box.connect("hostname-changed", self.hostname_changed)
@@ -42,10 +46,11 @@ class Settings(Adw.PreferencesGroup):
         self.add(self.password)
         self.add(self.test_connection)
 
-        self.load_settings()
-
     def load_settings(self):
         settings = self.plugin_base.get_settings()
+
+        settings["first-setup"] = False
+        self.plugin_base.set_settings(settings)
 
         self.network_entry.set_ip(settings.get("ip-address", "127.0.0.1"))
         self.port.set_value(settings.get("port", 4455))
@@ -55,7 +60,6 @@ class Settings(Adw.PreferencesGroup):
             self.connection_status.set_text("Connected")
         else:
             self.connection_status.set_text("Not Connected")
-
 
     def ip_changed(self, entry, ip_address):
         settings = self.plugin_base.get_settings()
@@ -68,7 +72,6 @@ class Settings(Adw.PreferencesGroup):
 
         settings["hostname"] = hostname
         self.plugin_base.set_settings(settings)
-
 
     def password_changed(self, *args):
         settings = self.plugin_base.get_settings()

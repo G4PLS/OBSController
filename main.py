@@ -5,18 +5,27 @@ import os
 from src.backend.DeckManagement.ImageHelpers import image2pixbuf
 from src.backend.DeckManagement.InputIdentifier import Input
 from src.backend.PluginManager.ActionHolder import ActionHolder
+from src.backend.PluginManager.ActionHolderGroup import ActionHolderGroup
 from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
 from src.backend.PluginManager.EventHolder import EventHolder
 from src.backend.PluginManager.PluginBase import PluginBase
 from .Settings import Settings
 
-from .actions.Recording.RecordingAction import RecordingAction
-from .actions.Scene.SceneAction import SceneAction
-from .actions.VirtualCamera.VirtualCameraAction import VirtualCameraAction
-from .actions.OBSActions.ReconnectAction import ReconnectAction
-from .actions.ReplayBuffer.ReplayBufferAction import ReplayBufferAction
-
 from .internal.EventHolders.OBSEventHolder import OBSEventHolder
+
+from .actions.System.Reconnect import Reconnect
+from .actions.System.OpenOBS import OpenOBS
+
+from .actions.Recording.ToggleRecord import ToggleRecord
+from .actions.Recording.TogglePause import TogglePause
+from .actions.Recording.SplitRecordFile import SplitRecordFile
+from .actions.Recording.AddRecordChapter import AddRecordChapter
+
+from .actions.VirtrualCamera.ToggleVirtualCam import ToggleVirtualCam
+
+from .actions.ReplayBuffer.ToggleReplayBuffer import ToggleReplayBuffer
+from .actions.ReplayBuffer.SaveReplayBuffer import SaveReplayBuffer
+from .actions.ReplayBuffer.OpenLastSavedBuffer import OpenLastSavedBuffer
 
 from .globals import Icons, Colors, icon_size
 
@@ -39,70 +48,171 @@ class OBSController(PluginBase):
         self.launch_backend(os.path.join(self.PATH, "backend", "backend.py"), os.path.join(self.PATH, "backend", ".venv"))
         self.wait_for_backend(10)
 
-        self.record_holder = ActionHolder(
-            plugin_base=self,
-            action_base=RecordingAction,
-            action_id_suffix="Recording",
-            action_name="Recording",
-            action_support= {
-                Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.SUPPORTED,
-                Input.Touchscreen: ActionInputSupport.SUPPORTED
-            }
-        )
-        self.add_action_holder(self.record_holder)
+        # System
 
-        self.reconnect_holder = ActionHolder(
+        self.reconnect = ActionHolder(
             plugin_base=self,
-            action_base=ReconnectAction,
+            action_base=Reconnect,
             action_id_suffix="Reconnect",
             action_name="Reconnect",
             action_support= {
                 Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.SUPPORTED,
-                Input.Touchscreen: ActionInputSupport.SUPPORTED
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
             }
         )
-        self.add_action_holder(self.reconnect_holder)
+        self.add_action_holder(self.reconnect)
 
-        self.virtual_cam_action = ActionHolder(
+        self.open_obs = ActionHolder(
             plugin_base=self,
-            action_base=VirtualCameraAction,
-            action_id_suffix="VirtualCam",
-            action_name="Virtual Camera",
+            action_base=OpenOBS,
+            action_id_suffix="OpenOBS",
+            action_name="Open OBS",
             action_support= {
                 Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.SUPPORTED,
-                Input.Touchscreen: ActionInputSupport.SUPPORTED
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
             }
         )
-        self.add_action_holder(self.virtual_cam_action)
+        self.add_action_holder(self.open_obs)
 
-        self.replay_buffer_action = ActionHolder(
+        # Recording
+
+        self.toggle_record = ActionHolder(
             plugin_base=self,
-            action_base=ReplayBufferAction,
-            action_id_suffix="ReplayBuffer",
-            action_name="Replay Buffer",
+            action_base=ToggleRecord,
+            action_id_suffix="ToggleRecord",
+            action_name="Toggle Record",
             action_support= {
                 Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.SUPPORTED,
-                Input.Touchscreen: ActionInputSupport.SUPPORTED
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
             }
         )
-        self.add_action_holder(self.replay_buffer_action)
+        self.add_action_holder(self.toggle_record)
 
-        self.switch_scene_action = ActionHolder(
+        self.toggle_pause = ActionHolder(
             plugin_base=self,
-            action_base=SceneAction,
-            action_id_suffix="Scene",
-            action_name="Scene",
+            action_base=TogglePause,
+            action_id_suffix="TogglePause",
+            action_name="Toggle Pause",
             action_support= {
                 Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.SUPPORTED,
-                Input.Touchscreen: ActionInputSupport.SUPPORTED
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
             }
         )
-        self.add_action_holder(self.switch_scene_action)
+        self.add_action_holder(self.toggle_pause)
+
+        self.split_record_file = ActionHolder(
+            plugin_base=self,
+            action_base=SplitRecordFile,
+            action_id_suffix="SplitRecordFile",
+            action_name="Split Record File",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
+            }
+        )
+        self.add_action_holder(self.split_record_file)
+
+        self.add_record_chapter = ActionHolder(
+            plugin_base=self,
+            action_base=AddRecordChapter,
+            action_id_suffix="AddRecordChapter",
+            action_name="Add Record Chapter",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
+            }
+        )
+        self.add_action_holder(self.add_record_chapter)
+
+        # Camera
+
+        self.toggle_virtual_cam = ActionHolder(
+            plugin_base=self,
+            action_base=ToggleVirtualCam,
+            action_id_suffix="ToggleVirtualCam",
+            action_name="Toggle Camera",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
+            }
+        )
+        self.add_action_holder(self.toggle_virtual_cam)
+
+        # Replay Buffer
+
+        self.toggle_replay_buffer = ActionHolder(
+            plugin_base=self,
+            action_base=ToggleReplayBuffer,
+            action_id_suffix="ToggleReplayBuffer",
+            action_name="Toggle Buffer",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
+            }
+        )
+        self.add_action_holder(self.toggle_replay_buffer)
+
+        self.save_replay_buffer = ActionHolder(
+            plugin_base=self,
+            action_base=SaveReplayBuffer,
+            action_id_suffix="SaveReplayBuffer",
+            action_name="Save Buffer",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
+            }
+        )
+        self.add_action_holder(self.save_replay_buffer)
+
+        self.open_last_saved_buffer = ActionHolder(
+            plugin_base=self,
+            action_base=OpenLastSavedBuffer,
+            action_id_suffix="OpenLastSavedBuffer",
+            action_name="Open Last Buffer",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
+            }
+        )
+        self.add_action_holder(self.open_last_saved_buffer)
+
+        # Groups
+
+        self.system_group = ActionHolderGroup("System", [
+            self.open_obs,
+            self.reconnect,])
+
+        self.recording_group = ActionHolderGroup("Recording",[
+            self.toggle_record,
+            self.toggle_pause,
+            self.split_record_file,
+            self.add_record_chapter,])
+
+        self.camera_group = ActionHolderGroup("Virtual Camera", [
+            self.toggle_virtual_cam,
+        ])
+
+        self.replay_buffer_group = ActionHolderGroup("Replay Buffer", [
+            self.toggle_replay_buffer,
+            self.save_replay_buffer,
+            self.open_last_saved_buffer,])
+
+        self.add_action_holder_groups([
+            self.system_group,
+            self.recording_group,
+            self.camera_group,
+            self.replay_buffer_group,
+        ])
 
         #
         # EVENT HOLDER
