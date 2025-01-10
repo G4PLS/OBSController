@@ -27,6 +27,8 @@ from .actions.ReplayBuffer.ToggleReplayBuffer import ToggleReplayBuffer
 from .actions.ReplayBuffer.SaveReplayBuffer import SaveReplayBuffer
 from .actions.ReplayBuffer.OpenLastSavedBuffer import OpenLastSavedBuffer
 
+from .actions.Scene.SwitchScene import SwitchScene
+
 from .globals import Icons, Colors, icon_size
 
 import gi
@@ -186,6 +188,21 @@ class OBSController(PluginBase):
         )
         self.add_action_holder(self.open_last_saved_buffer)
 
+        # Scene
+
+        self.switch_scene = ActionHolder(
+            plugin_base=self,
+            action_base=SwitchScene,
+            action_id_suffix="SwitchScene",
+            action_name="Switch Scene",
+            action_support= {
+                Input.Key: ActionInputSupport.SUPPORTED,
+                Input.Dial: ActionInputSupport.UNTESTED,
+                Input.Touchscreen: ActionInputSupport.UNTESTED
+            }
+        )
+        self.add_action_holder(self.switch_scene)
+
         # Groups
 
         self.system_group = ActionHolderGroup("System", [
@@ -207,11 +224,15 @@ class OBSController(PluginBase):
             self.save_replay_buffer,
             self.open_last_saved_buffer,])
 
+        self.scene_group = ActionHolderGroup("Scene", [
+            self.switch_scene])
+
         self.add_action_holder_groups([
             self.system_group,
             self.recording_group,
             self.camera_group,
             self.replay_buffer_group,
+            self.scene_group,
         ])
 
         #
