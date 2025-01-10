@@ -35,17 +35,14 @@ class ToggleVirtualCam(OBSAction):
         self.load_settings()
 
     def on_update(self):
-        self.change_icon({})
-        self.change_color({})
+        self.send_obs_request()
 
         self.show_icon()
         self.show_label()
         self.show_color()
 
     def on_tick(self):
-        status = self.plugin_base.backend.get_virtual_cam_status() or {}
-        self.change_icon(status)
-        self.change_color(status)
+        self.send_obs_request()
 
         self.show_icon()
         self.show_label()
@@ -60,6 +57,11 @@ class ToggleVirtualCam(OBSAction):
         pass
 
     # Setting Loaders
+
+    def send_obs_request(self):
+        status = self.plugin_base.backend.get_virtual_cam_status() or {}
+        self.change_icon(status)
+        self.change_color(status)
 
     # Ui Events
 

@@ -35,19 +35,14 @@ class ToggleRecord(OBSAction):
         self.load_settings()
 
     def on_update(self):
-        self.change_icon({})
-        self.change_timecode({})
-        self.change_color({})
+        self.send_obs_request()
 
         self.show_icon()
         self.show_label()
         self.show_color()
 
     def on_tick(self):
-        status = self.plugin_base.backend.get_record_status() or {}
-        self.change_icon(status)
-        self.change_timecode(status)
-        self.change_color(status)
+        self.send_obs_request()
 
         self.show_icon()
         self.show_label()
@@ -93,6 +88,12 @@ class ToggleRecord(OBSAction):
         index = self.label_provider.get_index(self.timecode_location)
 
         self.timecode_locator.populate(positions, index)
+
+    def send_obs_request(self):
+        status = self.plugin_base.backend.get_record_status() or {}
+        self.change_icon(status)
+        self.change_timecode(status)
+        self.change_color(status)
 
     # Ui Events
 
