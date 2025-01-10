@@ -26,4 +26,11 @@ class Icons(StrEnum):
     VIRTUAL_CAM_ON = "cam_on"
     VIRTUAL_CAM_OFF = "cam_off"
 
+    #TODO: ADD ICONS FOR NAMES
+
+    SCENE = "scene"
+    SCENE_ACTIVE = "scene_active"
+    PREVIEW_SCENE = "preview_scene"
+    PREVIEW_SCENE_ACTIVE = "preview_scene_active"
+
 icon_size = 0.75
