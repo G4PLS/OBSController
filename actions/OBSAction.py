@@ -97,6 +97,9 @@ class OBSAction(ActionBase):
     def load_ui_settings(self):
         pass
 
+    def send_obs_request(self):
+        pass
+
     # Ui Events
 
     def connect_events(self):
