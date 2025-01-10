@@ -133,11 +133,11 @@ class ToggleRecord(OBSAction):
         location = item.display_label
 
         self._current_labels[self.timecode_location] = ""
+        self._current_labels[location] = self.last_timecode
         self.timecode_location = location
         settings["timecode-location"] = location
         self.set_settings(settings)
 
-        self.change_timecode(None)
         self.show_label()
 
     def offset_changed(self, *args):
