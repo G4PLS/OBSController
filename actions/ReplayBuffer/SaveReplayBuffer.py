@@ -12,6 +12,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw
 
 from ..OBSAction import OBSAction
+from .ReplayBufferHelper import map_buffer_state_change
 
 class SaveReplayBuffer(OBSAction):
     def __init__(self, *args, **kwargs):
@@ -20,11 +21,8 @@ class SaveReplayBuffer(OBSAction):
         self.icon_keys = [Icons.SAVE_BUFFER]
         self.color_keys = [Colors.SECONDARY]
 
-        self._icon_name = Icons.SAVE_BUFFER
-        self._color_name = Colors.SECONDARY
-
-        self._current_icon = self.get_icon(self._icon_name)
-        self._current_color = self.get_color(self._color_name)
+        self.plugin_base.connect_to_backend_event("com.gapls.OBSController::OBSEvent", "on_replay_buffer_state_changed",
+                                                  self.buffer_state_changed)
 
     # Action Events
 
@@ -32,6 +30,8 @@ class SaveReplayBuffer(OBSAction):
         self.load_settings()
 
     def on_update(self):
+        self.send_obs_request()
+
         self.show_icon()
         self.show_label()
         self.show_color()
@@ -46,10 +46,31 @@ class SaveReplayBuffer(OBSAction):
 
     # Setting Loaders
 
+    def send_obs_request(self):
+        status = self.plugin_base.backend.get_replay_buffer_status() or {}
+        self.change_color(status)
+
+        self._icon_name = Icons.SAVE_BUFFER
+        self._current_icon = self.get_icon(self._icon_name)
+
     # Ui Events
 
     # Displaying
 
     # Asset Managing
+
+    def change_color(self, status):
+        if status.get("output_active", False):
+            self._color_name = Colors.PRIMARY
+        else:
+            self._color_name = Colors.SECONDARY
+        self._current_color = self.get_color(self._color_name)
+
+    async def buffer_state_changed(self, event_id: str, obs_event: str, message: dict):
+        status = map_buffer_state_change(message)
+
+        self.change_color(status)
+        self.show_icon()
+        self.show_color()
 
     # Misc

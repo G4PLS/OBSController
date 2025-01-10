@@ -11,6 +11,8 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw
 
+from .ReplayBufferHelper import map_buffer_state_change
+
 from ..OBSAction import OBSAction
 
 class ToggleReplayBuffer(OBSAction):
@@ -30,8 +32,7 @@ class ToggleReplayBuffer(OBSAction):
         self.load_settings()
 
     def on_update(self):
-        self.change_icon({})
-        self.change_color({})
+        self.send_obs_request()
 
         self.show_icon()
         self.show_label()
@@ -56,6 +57,11 @@ class ToggleReplayBuffer(OBSAction):
 
     # Setting Loaders
 
+    def send_obs_request(self):
+        status = self.plugin_base.backend.get_replay_buffer_status() or {}
+        self.change_color(status)
+        self.change_icon(status)
+
     # Ui Events
 
     # Displaying
@@ -77,23 +83,7 @@ class ToggleReplayBuffer(OBSAction):
     # Asset Managing
 
     async def buffer_state_changed(self, event_id: str, obs_event: str, message: dict):
-        status = {}
-
-        status_mapping = {
-            "OBS_WEBSOCKET_OUTPUT_STARTED": {"running": True, "paused": False},
-            "OBS_WEBSOCKET_OUTPUT_STARTING": {"running": True, "paused": False},
-            "OBS_WEBSOCKET_OUTPUT_RESUMED": {"running": True, "paused": False},
-            "OBS_WEBSOCKET_OUTPUT_STOPPING": {"running": False, "paused": False},
-            "OBS_WEBSOCKET_OUTPUT_STOPPED": {"running": False, "paused": False},
-            "OBS_WEBSOCKET_OUTPUT_PAUSED": {"running": True, "paused": True},
-        }
-
-        state = message.get("output_state", "OBS_WEBSOCKET_OUTPUT_STOPPED")
-
-        mapped_state = status_mapping.get(state, {})
-
-        status["output_active"] = mapped_state.get("running", False)
-        status["output_paused"] = mapped_state.get("paused", False)
+        status = map_buffer_state_change(message)
 
         self.change_icon(status)
         self.change_color(status)
