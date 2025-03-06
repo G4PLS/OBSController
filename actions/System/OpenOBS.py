@@ -1,10 +1,11 @@
+import multiprocessing
 import shlex
+import subprocess
 
 import gi
 
 from GtkHelper.GtkHelper import better_disconnect
 from ...globals import Icons, Colors
-from ...internal.helper import run_command_detached
 
 # from src.backend.Logging.Loggers.PluginLogger import plugin_logger
 
@@ -47,7 +48,7 @@ class OpenOBS(OBSAction):
         elif self.is_flatpak:
             command = ["flatpak", "run", "com.obsproject.Studio"]
 
-        run_command_detached(command)
+        multiprocessing.Process(target=subprocess.Popen, args=(command, ), kwargs={"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL}).start()
 
     # Ui Definition
 

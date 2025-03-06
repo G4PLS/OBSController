@@ -1,3 +1,4 @@
+import multiprocessing
 import subprocess
 
 from src.backend.DeckManagement.InputIdentifier import InputEvent, Input
@@ -6,8 +7,6 @@ from src.backend.PluginManager.ActionBase import ActionBase
 from GtkHelper.GtkHelper import better_disconnect
 from ...globals import Icons, Colors
 import gi
-
-from ...internal.helper import run_command_detached
 
 from GtkHelper.SearchComboRow import SearchComboRow
 
@@ -49,7 +48,7 @@ class OpenLastSavedBuffer(OBSAction):
         replay_path = status.get("saved_replay_path", None)
 
         if replay_path:
-            run_command_detached(["xdg-open", replay_path])
+            multiprocessing.Process(target=subprocess.Popen, args=["xdg-open", replay_path], kwargs={"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL}).start()
 
     # Ui Definition
 
